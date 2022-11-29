@@ -164,6 +164,7 @@ class DeckAdapter(private val layoutInflater: LayoutInflater, context: Context) 
             setDeckExpander(holder.deckExpander, holder.indentView, treeNode)
         } else {
             holder.deckExpander.visibility = View.GONE
+            holder.deckExpander.isClickable = false
             val normalPadding = deckLayout.resources.getDimension(R.dimen.deck_picker_left_padding).toInt()
             deckLayout.setPadding(normalPadding, 0, rightPadding, 0)
         }
