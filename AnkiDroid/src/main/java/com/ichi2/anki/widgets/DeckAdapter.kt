@@ -172,7 +172,6 @@ class DeckAdapter(private val layoutInflater: LayoutInflater, context: Context) 
             holder.deckExpander.setOnClickListener(mDeckExpanderClickListener)
         } else {
             holder.deckExpander.isClickable = false
-            holder.deckExpander.setOnClickListener(null)
         }
         holder.deckLayout.setBackgroundResource(mRowCurrentDrawable)
         // Set background colour. The current deck has its own color
