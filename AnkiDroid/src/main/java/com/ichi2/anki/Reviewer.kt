@@ -762,7 +762,7 @@ open class Reviewer : AbstractFlashcardViewer() {
         if (colIsOpen()) { // Required mostly because there are tests where `col` is null
             if (mShowWhiteboard && whiteboard != null && whiteboard!!.isUndoModeActive) {
                 // Whiteboard is here and strokes have been added at some point
-                undoIcon.title = resources.getString(R.string.studyoptions_congrats_undo, "LAST STROKE")  //test string
+                undoIcon.title = resources.getString(R.string.studyoptions_congrats_undo, R.string.whiteboard_last_stroke)  //test string
             } else if (col.undoAvailable()) {
                 // We arrive here if the last action which can be undone is retained.
                 //  e.g. Undo Bury, Undo Change Deck, Undo Update Note
