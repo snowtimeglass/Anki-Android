@@ -744,7 +744,7 @@ open class Reviewer : AbstractFlashcardViewer() {
         // Undo button
         @DrawableRes val undoIconId: Int
         val undoEnabled: Boolean
-        if (mShowWhiteboard && whiteboard != null && whiteboard?.isUndoModeActive == true) {
+        if (mShowWhiteboard && whiteboard?.isUndoModeActive == true) {
             // We arrive here if the first stroke of whiteboard is done.
             // We leave here when whiteboard is inactive (by "Disable whiteboard" or "Hide whiteboard")
             //  or is reset (by "Clear whiteboard")
