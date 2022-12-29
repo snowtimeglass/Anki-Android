@@ -73,6 +73,8 @@ class Whiteboard(activity: AnkiActivity, handleMultiTouch: Boolean, inverted: Bo
      */
     var isUndoModeActive = false
         private set
+    var hasStrokes = false
+        private set
 
     @get:CheckResult
     @get:VisibleForTesting
@@ -180,6 +182,7 @@ class Whiteboard(activity: AnkiActivity, handleMultiTouch: Boolean, inverted: Bo
      */
     fun clear() {
         isUndoModeActive = false
+        hasStrokes = false
         mBitmap.eraseColor(0)
         mUndo.clear()
         invalidate()
@@ -255,6 +258,7 @@ class Whiteboard(activity: AnkiActivity, handleMultiTouch: Boolean, inverted: Bo
         action.apply(mCanvas)
         mUndo.add(action)
         isUndoModeActive = true
+        hasStrokes = true
         // kill the path so we don't double draw
         mPath.reset()
         if (mUndo.size() == 1) {
