@@ -744,15 +744,11 @@ open class Reviewer : AbstractFlashcardViewer() {
         // Undo button
         @DrawableRes val undoIconId: Int
         val undoEnabled: Boolean
-        if (mShowWhiteboard && whiteboard?.isUndoModeActive == true) {
-            // We arrive here if the first stroke of whiteboard is done.
-            // We leave here when whiteboard is inactive (by "Disable whiteboard" or "Hide whiteboard")
-            //  or is reset (by "Clear whiteboard")
+        val whiteboardShowsStrokesToUndo = showWhiteboard && whiteboard?.hasStrokes == true
+        if (whiteboardShowsStrokesToUndo) {
             undoIconId = R.drawable.eraser
-            undoEnabled = !whiteboard!!.undoEmpty()
+            undoEnabled = true
         } else {
-            // We can arrive here even if `mShowWhiteboard &&
-            // mWhiteboard != null` if no stroke had ever been made
             undoIconId = R.drawable.ic_undo_white
             undoEnabled = colIsOpen() && col.undoAvailable()
         }
@@ -762,14 +758,13 @@ open class Reviewer : AbstractFlashcardViewer() {
         undoIcon.setEnabled(undoEnabled).iconAlpha = alphaUndo
         undoIcon.actionView!!.isEnabled = undoEnabled
         if (colIsOpen()) { // Required mostly because there are tests where `col` is null
-            if (undoIconId == R.drawable.eraser) {
+            if (whiteboardShowsStrokesToUndo) {
                 undoIcon.title = resources.getString(R.string.undo_action_whiteboard_last_stroke)
             } else if (col.undoAvailable()) {
-                // We arrive here if the last action which can be undone is retained.
-                //  e.g. Undo Bury, Undo Change Deck, Undo Update Note
                 undoIcon.title = resources.getString(R.string.studyoptions_congrats_undo, col.undoName(resources))
+                //  e.g. Undo Bury, Undo Change Deck, Undo Update Note
             } else {
-                // We arrive here if the last action which can be undone isn't retained.
+                // We arrive here if the last collection-action which can be undone isn't retained.
                 // In this case, there is no object word for the verb, "Undo",
                 // so in some languages such as Japanese, which have pre/postpositional particle with the object,
                 // we need to use the string for just "Undo" instead of the string for "Undo %s".
