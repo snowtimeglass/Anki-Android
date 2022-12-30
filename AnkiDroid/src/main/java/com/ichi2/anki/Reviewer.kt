@@ -744,7 +744,7 @@ open class Reviewer : AbstractFlashcardViewer() {
         // Undo button
         @DrawableRes val undoIconId: Int
         val undoEnabled: Boolean
-        val whiteboardShowsStrokesToUndo = mShowWhiteboard && whiteboard != null && whiteboard?.hasStrokes == true
+        val whiteboardShowsStrokesToUndo = mShowWhiteboard && !whiteboard?.undoEmpty()
         if (whiteboardShowsStrokesToUndo) {
             undoIconId = R.drawable.eraser
             undoEnabled = true
