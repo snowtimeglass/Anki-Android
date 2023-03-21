@@ -90,6 +90,7 @@ import com.ichi2.anki.servicelayer.ScopedStorageService.userMigrationIsInProgres
 import com.ichi2.anki.servicelayer.scopedstorage.migrateuserdata.toMB
 import com.ichi2.anki.services.MigrationService
 import com.ichi2.anki.services.ServiceConnection
+import com.ichi2.anki.snackbar.setMaxLines
 import com.ichi2.anki.snackbar.showSnackbar
 import com.ichi2.anki.stats.AnkiStatsTaskHandler
 import com.ichi2.anki.web.HostNumFactory
@@ -2440,7 +2441,9 @@ open class DeckPicker :
                 }
             }
             if (elapsedMillisDuringEssentialFilesMigration > 800) {
-                showSnackbar(R.string.migration_part_1_done_resume)
+                showSnackbar(R.string.migration_part_1_done_resume) {
+                    setMaxLines(4)
+                }
                 refreshState()
             }
         }
