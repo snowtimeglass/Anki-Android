@@ -31,14 +31,14 @@ android {
     compileSdkVersion 33 // change api compileSdkVersion at the same time
 
     defaultConfig {
-        applicationId "com.ichi2.anki"
+        applicationId "com.ichi2.anki.c" //[AnkiDroid directory name body] original: "com.ichi2.anki"
         buildConfigField "Boolean", "CI", (System.getenv("CI") == "true").toString()
         buildConfigField "Boolean", "LEGACY_SCHEMA", "true"
         buildConfigField "String", "ACRA_URL", '"https://ankidroid.org/acra/report"'
         buildConfigField "String", "BACKEND_VERSION", "\"$ankidroid_backend_version\""
         buildConfigField "Boolean", "ENABLE_LEAK_CANARY", "false"
         buildConfigField "Boolean", "ALLOW_UNSAFE_MIGRATION", "false"
-        resValue "string", "app_name", "AnkiDroid"
+        resValue "string", "app_name", "AnkiDroid.C" //[Application name] original: "AnkiDroid.D"
 
         // The version number is of the form:
         // <major>.<minor>.<maintenance>[dev|alpha<build>|beta<build>|]
@@ -80,9 +80,9 @@ android {
     }
     buildTypes {
         debug {
-            versionNameSuffix "-debug"
+            versionNameSuffix ".C.unofficial" //[App info suffix & Debug info suffix] original: "-debug"
             debuggable true
-            applicationIdSuffix ".debug"
+            applicationIdSuffix ".unofficial" //[AnkiDroid directory name suffix] original: ".debug"
             splits.abi.universalApk = true // Build universal APK for debug always
             // Check Crash Reports page on developer wiki for info on ACRA testing
             // buildConfigField "String", "ACRA_URL", '"https://918f7f55-f238-436c-b34f-c8b5f1331fe5-bluemix.cloudant.com/acra-ankidroid/_design/acra-storage/_update/report"'
@@ -115,8 +115,8 @@ android {
             }
 
             // make the icon red if in debug mode
-            resValue 'color', 'anki_foreground_icon_color_0', "#FFFF0000"
-            resValue 'color', 'anki_foreground_icon_color_1', "#FFFF0000"
+            resValue 'color', 'anki_foreground_icon_color_0', "#FF29B6F6" // original: "#FFFF0000"
+            resValue 'color', 'anki_foreground_icon_color_1', "#FF0288D1" // original: "#FFFF0000"
             resValue "string", "applicationId", "${defaultConfig.applicationId}${applicationIdSuffix}"
         }
         release {
