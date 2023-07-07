@@ -141,8 +141,8 @@
     <string name="custom_study_deck_name">Custom study session</string>
     <string name="custom_study_deck_exists">Rename the existing custom study deck first</string>
     <string name="empty_deck">This deck is empty</string>
-    <string name="search_deck" comment="Deck search for selecting it">Deck Search</string>
-    <string name="search_for_download_deck" comment="Deck search value for downloading deck">Deck Search</string>
+    <string name="search_deck" comment="Deck search for selecting it">Deck search</string>
+    <string name="search_for_download_deck" comment="Deck search value for downloading deck">Deck search</string>
     <string name="invalid_deck_name">Invalid deck name</string>
     <string name="studyoptions_empty">This deck is empty. Press the + button to add new content.</string>
     <string name="studyoptions_limit_reached">Daily study limit reached</string>
@@ -171,7 +171,7 @@
     <string name="card_template_editor_front">Front template</string>
     <string name="card_template_editor_back">Back template</string>
     <string name="card_template_editor_styling">Styling</string>
-    <string name="card_template_editor_menu_card_browser_appearance">Card Browser Appearance</string>
+    <string name="card_template_editor_menu_card_browser_appearance">Card browser appearance</string>
     <string name="card_template_editor_deck_override">Deck override</string>
     <string name="card_template_editor_insert_field">Insert field</string>
     <string name="card_template_editor_select_field">Select field</string>
