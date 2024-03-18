@@ -184,7 +184,7 @@ open class Reviewer :
         toolbar = findViewById(R.id.toolbar)
         micToolBarLayer = findViewById(R.id.mic_tool_bar_layer)
         if (sharedPrefs().getString("answerButtonPosition", "bottom") == "bottom") {
-            setNavigationBarColor(R.attr.showAnswerColor)
+            setNavigationBarColor(R.attr.navigationBarBelowAnswerButtonColor)
         }
         if (!sharedPrefs().getBoolean("showDeckTitle", false)) {
             // avoid showing "AnkiDroid"

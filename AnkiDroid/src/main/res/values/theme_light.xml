@@ -64,6 +64,7 @@
         <item name="alternativeBackgroundColor">#f4f5f9</item>
         <!-- Reviewer button drawables -->
         <item name="showAnswerColor">@color/material_blue_grey_700</item>
+        <item name="navigationBarBelowAnswerButtonColor">@color/material_blue_grey_800</item>
         <item name="againButtonRef">@drawable/footer_button_again</item>
         <item name="hardButtonRef">@drawable/footer_button_hard</item>
         <item name="goodButtonRef">@drawable/footer_button_good</item>
