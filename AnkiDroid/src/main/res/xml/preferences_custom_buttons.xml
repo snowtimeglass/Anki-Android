@@ -96,7 +96,7 @@ TODO: Add a unit test
             android:entryValues="@array/custom_button_values"
             android:key="@string/custom_button_replay_key"
             android:title="@string/replay_audio"
-            app:icon="@drawable/ic_replay"
+            android:icon="@drawable/ic_play_circle_white"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
             android:defaultValue="3"
