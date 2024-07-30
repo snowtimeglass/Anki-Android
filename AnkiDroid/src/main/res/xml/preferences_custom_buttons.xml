@@ -40,6 +40,7 @@ TODO: Add a unit test
             android:entryValues="@array/custom_button_values"
             android:key="@string/custom_button_undo_key"
             android:title="@string/undo"
+            android:icon="@drawable/ic_undo_white"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
             android:defaultValue="1"
@@ -47,6 +48,7 @@ TODO: Add a unit test
             android:entryValues="@array/custom_button_values"
             android:key="@string/custom_button_redo_key"
             android:title="@string/redo"
+            android:icon="@drawable/ic_redo"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
             android:defaultValue="0"
@@ -61,6 +63,7 @@ TODO: Add a unit test
             android:entryValues="@array/custom_button_values"
             android:key="@string/custom_button_flag_key"
             android:title="@string/menu_flag"
+            android:icon="@drawable/ic_flag_transparent"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
             android:defaultValue="1"
@@ -68,6 +71,7 @@ TODO: Add a unit test
             android:entryValues="@array/custom_button_values"
             android:key="@string/custom_button_edit_card_key"
             android:title="@string/cardeditor_title_edit_card"
+            android:icon="@drawable/ic_popup_menu_item_editor"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
             android:defaultValue="0"
