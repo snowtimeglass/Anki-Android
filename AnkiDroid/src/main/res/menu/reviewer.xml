@@ -60,7 +60,7 @@
         <menu>
             <item
                 android:id="@id/flag_none"
-                android:icon="@drawable/ic_flag_lightgrey"
+                android:icon="@drawable/ic_flag_backslashed"
                 tools:title="No Flag"/>
             <item
                 android:id="@id/flag_red"

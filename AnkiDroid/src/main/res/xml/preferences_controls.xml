@@ -112,7 +112,7 @@
         <com.ichi2.preferences.ControlPreference
             android:key="@string/remove_flag_command_key"
             android:title="@string/gesture_flag_remove"
-            android:icon="@drawable/ic_flag_transparent"
+            android:icon="@drawable/ic_flag_backslashed"
             />
     </PreferenceCategory>
 
