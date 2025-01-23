@@ -126,26 +126,26 @@ class Whiteboard(
         }
     }
 
-    // 描画するたびにクリア処理を挟む
-    private fun touchMove(
-        x: Float,
-        y: Float,
-    ) {
-        path.lineTo(x, y)
-        // 一時ビットマップをクリア
-        tempBitmap?.eraseColor(Color.TRANSPARENT)
-        // 再描画
-        invalidate()
-    }
-
-    private fun touchUp() {
-        // 一時ビットマップの内容をメインビットマップに適用
-        canvas.drawBitmap(tempBitmap!!, 0f, 0f, null)
-        // パスをリセット
-        path.reset()
-        // 再描画
-        invalidate()
-    }
+//    // 描画するたびにクリア処理を挟む
+//    private fun touchMove(
+//        x: Float,
+//        y: Float,
+//    ) {
+//        path.lineTo(x, y)
+//        // 一時ビットマップをクリア
+//        tempBitmap?.eraseColor(Color.TRANSPARENT)
+//        // 再描画
+//        invalidate()
+//    }
+//
+//    private fun touchUp() {
+//        // 一時ビットマップの内容をメインビットマップに適用
+//        canvas.drawBitmap(tempBitmap!!, 0f, 0f, null)
+//        // パスをリセット
+//        path.reset()
+//        // 再描画
+//        invalidate()
+//    }
 
     private val eraserPaint =
         Paint().apply {
@@ -343,7 +343,7 @@ class Whiteboard(
         this.x = x
         this.y = y
 
-        touchMove(x, y) // +
+//        touchMove(x, y) // +
     }
 
     private fun drawAlong(
@@ -357,24 +357,40 @@ class Whiteboard(
             this.x = x
             this.y = y
         }
-        touchMove(x, y) // +
+//        touchMove(x, y) // +
+
+        // 描画中の処理を追加
+        tempBitmap?.eraseColor(Color.TRANSPARENT) // 一時キャンバスをクリア
+        tempCanvas?.drawPath(path, paint) // 現在のパスを一時キャンバスに描画
+        invalidate() // 再描画を指示
     }
 
     private fun drawFinish() {
         isCurrentlyDrawing = false
         val pm = PathMeasure(path, false)
         path.lineTo(x, y)
+
+        // 一時キャンバスの内容をメインキャンバスに統合
+        canvas.drawBitmap(tempBitmap!!, 0f, 0f, null)
+
         val paint = Paint(paint)
         val action = if (pm.length > 0) DrawPath(Path(path), paint) else DrawPoint(x, y, paint)
         action.apply(canvas)
         undo.add(action)
+
+        // パスをリセットして二重描画を防止
+        path.reset()
+
         // kill the path so we don't double draw
         path.reset()
         if (undo.size() == 1) {
             ankiActivity.invalidateOptionsMenu()
         }
 
-        touchUp() // +
+        // 再描画を指示
+        invalidate()
+
+//        touchUp() // +
     }
 
     private fun drawAbort() {
