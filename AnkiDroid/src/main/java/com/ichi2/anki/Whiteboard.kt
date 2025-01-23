@@ -26,6 +26,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.Point
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Region
@@ -96,7 +98,7 @@ class Whiteboard(
         canvas.apply {
             drawColor(0)
             drawBitmap(bitmap, 0f, 0f, bitmapPaint)
-            drawPath(path, paint)
+            drawPath(path, eraserPaint)
         }
     }
 
@@ -365,29 +367,43 @@ class Whiteboard(
         return false
     }
 
+    private var isEraserMode = false // 消しゴムモードを示すフラグ
+
     fun onClick(view: View) {
         when (view.id) {
             R.id.pen_color_white -> {
                 penColor = Color.WHITE
+                isEraserMode = false // 通常の描画モード
             }
             R.id.pen_color_black -> {
                 penColor = Color.BLACK
+                isEraserMode = false // 通常の描画モード
             }
             R.id.pen_color_red -> {
-                val redPenColor = context.getColor(R.color.material_red_500)
-                penColor = redPenColor
+                val redPenColor = context.getColor(R.color.material_red_500) // origin
+                // penColor = redPenColor
+                penColor = Color.TRANSPARENT // +
+                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) // +
+                // paint.style = Paint.Style.STROKE //+
+                isEraserMode = true // 消しゴムモードに切り替え
+                // isEraserMode = false  // 通常の描画モード
             }
             R.id.pen_color_green -> {
                 val greenPenColor = context.getColor(R.color.material_green_500)
                 penColor = greenPenColor
+                paint.xfermode = null
+                isEraserMode = false // 通常の描画モード
             }
             R.id.pen_color_blue -> {
                 val bluePenColor = context.getColor(R.color.material_blue_500)
                 penColor = bluePenColor
+                paint.xfermode = null
+                isEraserMode = false // 通常の描画モード
             }
             R.id.pen_color_yellow -> {
                 val yellowPenColor = context.getColor(R.color.material_yellow_500)
                 penColor = yellowPenColor
+                isEraserMode = false // 通常の描画モード
             }
             R.id.pen_color_custom -> {
                 ColorPickerPopUp(context).run {
@@ -397,6 +413,7 @@ class Whiteboard(
                         object : ColorPickerPopUp.OnPickColorListener {
                             override fun onColorPicked(color: Int) {
                                 penColor = color
+                                isEraserMode = false // 通常の描画モード
                             }
 
                             override fun onCancel() {
@@ -412,6 +429,34 @@ class Whiteboard(
             }
         }
     }
+
+    private var eraserPaint =
+        Paint().apply {
+            style = Paint.Style.STROKE
+            color = Color.YELLOW // 描画中の線が実際に黄色になった。
+            // color = if (penColor==0) Color.YELLOW else penColor
+            // color = penColor ?: Color.BLACK //penColorがnullなら黒色を使用  　color = penColorでデッキ選択後クラッシュ。?:以降を付けても同じ。
+            // color = foregroundColor //描画中の描線が透明になってしまう
+            isAntiAlias = true
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+            strokeWidth = currentStrokeWidth.toFloat()
+            if (isEraserMode) {
+
+                // 消しゴムモードの場合、透明な描線を描画
+                // xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+                color = Color.LTGRAY
+                // color = Color.TRANSPARENT
+            } else {
+                // 通常の描画モードの場合、ペンの色を使用
+                // xfermode = null
+                xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) // 描画中の線が黒くなる
+                color = Color.TRANSPARENT
+                // xfermode = null
+                // color = Color.MAGENTA //反映された
+                // color = penColor
+            }
+        }
 
     private fun handleWidthChangeDialog() {
         val whiteBoardWidthDialog = WhiteBoardWidthDialog(ankiActivity, currentStrokeWidth)
