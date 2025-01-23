@@ -359,9 +359,29 @@ class Whiteboard(
         }
 //        touchMove(x, y) // +
 
-        // 描画中の処理を追加
-        tempBitmap?.eraseColor(Color.TRANSPARENT) // 一時キャンバスをクリア
-        tempCanvas?.drawPath(path, paint) // 現在のパスを一時キャンバスに描画
+//        // 描画中の処理を追加
+//        tempBitmap?.eraseColor(Color.TRANSPARENT) // 一時キャンバスをクリア
+//        tempCanvas?.drawPath(path, paint) // 現在のパスを一時キャンバスに描画
+//        invalidate() // 再描画を指示
+
+        // 描画モードをチェック
+        if (paint.xfermode == PorterDuffXfermode(PorterDuff.Mode.CLEAR)) {
+            // 消しゴムモード
+
+            // 描画中に目立つ色を使用して確認
+            val debugPaint =
+                Paint().apply {
+                    color = Color.MAGENTA
+                    style = Paint.Style.STROKE
+                    strokeWidth = paint.strokeWidth
+                }
+
+            tempCanvas?.drawPath(path, debugPaint)
+//            tempCanvas?.drawPath(path, paint) // 一時キャンバスに透明色で描画
+        } else { // 通常モード
+            tempCanvas?.drawPath(path, paint)
+        }
+
         invalidate() // 再描画を指示
     }
 
