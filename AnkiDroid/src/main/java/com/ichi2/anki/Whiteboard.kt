@@ -26,6 +26,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.Point
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Region
@@ -78,6 +80,16 @@ class Whiteboard(
     private var secondFingerY = 0f
     private var secondFingerPointerId = 0
     private var secondFingerWithinTapTolerance = false
+    private var tempBitmap: Bitmap? = null // +
+    private var tempCanvas: Canvas? = null // +
+
+    private fun initializeTempCanvas(
+        width: Int,
+        height: Int,
+    ) {
+        tempBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        tempCanvas = Canvas(tempBitmap!!)
+    }
 
     var toggleStylus = false
     var isCurrentlyDrawing = false
@@ -95,9 +107,57 @@ class Whiteboard(
         super.onDraw(canvas)
         canvas.apply {
             drawColor(0)
-            drawBitmap(bitmap, 0f, 0f, bitmapPaint)
-            drawPath(path, paint)
+
+            // 背景を描画
+            canvas.drawBitmap(bitmap, 0f, 0f, null)
+
+            // 描画中のパスを一時キャンバスに反映
+            tempBitmap?.let {
+                tempCanvas?.apply {
+                    drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR) // 一時キャンバスをクリア
+                    drawPath(path, paint) // 描画中のパスを描画
+                }
+                // 一時バッファをメインキャンバスに重ねる
+                drawBitmap(it, 0f, 0f, null)
+            }
+
+            // drawBitmap(bitmap, 0f, 0f, bitmapPaint) //origin
+            // drawPath(path, paint) //origin
         }
+    }
+
+    // 描画するたびにクリア処理を挟む
+    private fun touchMove(
+        x: Float,
+        y: Float,
+    ) {
+        path.lineTo(x, y)
+        // 一時ビットマップをクリア
+        tempBitmap?.eraseColor(Color.TRANSPARENT)
+        // 再描画
+        invalidate()
+    }
+
+    private fun touchUp() {
+        // 一時ビットマップの内容をメインビットマップに適用
+        canvas.drawBitmap(tempBitmap!!, 0f, 0f, null)
+        // パスをリセット
+        path.reset()
+        // 再描画
+        invalidate()
+    }
+
+    private val eraserPaint =
+        Paint().apply {
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            isAntiAlias = true
+            style = Paint.Style.STROKE
+            strokeWidth = 20f
+        }
+
+    private fun startErasing() {
+        paint.xfermode = eraserPaint.xfermode
+        paint.color = Color.TRANSPARENT
     }
 
     /** Handle motion events to draw using the touch screen or to interact with the flashcard behind
@@ -260,6 +320,10 @@ class Whiteboard(
     ) {
         super.onSizeChanged(w, h, oldw, oldh)
         // createScaledBitmap requires a width and height > 0; #13972
+
+        // +
+        initializeTempCanvas(w, h) // 必要なときに呼び出される
+
         if (w <= 0 || h <= 0) {
             Timber.w("Width or height <= 0: w: $w h: $h Bitmap couldn't be created with the new size")
             return
@@ -278,6 +342,8 @@ class Whiteboard(
         path.moveTo(x, y)
         this.x = x
         this.y = y
+
+        touchMove(x, y) // +
     }
 
     private fun drawAlong(
@@ -291,6 +357,7 @@ class Whiteboard(
             this.x = x
             this.y = y
         }
+        touchMove(x, y) // +
     }
 
     private fun drawFinish() {
@@ -306,6 +373,8 @@ class Whiteboard(
         if (undo.size() == 1) {
             ankiActivity.invalidateOptionsMenu()
         }
+
+        touchUp() // +
     }
 
     private fun drawAbort() {
@@ -375,19 +444,23 @@ class Whiteboard(
             }
             R.id.pen_color_red -> {
                 val redPenColor = context.getColor(R.color.material_red_500)
-                penColor = redPenColor
+                penColor = redPenColor // 選択後にエディター非表示にするために必要？
+                startErasing()
             }
             R.id.pen_color_green -> {
                 val greenPenColor = context.getColor(R.color.material_green_500)
                 penColor = greenPenColor
+                paint.xfermode = null // +
             }
             R.id.pen_color_blue -> {
                 val bluePenColor = context.getColor(R.color.material_blue_500)
                 penColor = bluePenColor
+                paint.xfermode = null // +
             }
             R.id.pen_color_yellow -> {
                 val yellowPenColor = context.getColor(R.color.material_yellow_500)
                 penColor = yellowPenColor
+                paint.xfermode = null // +
             }
             R.id.pen_color_custom -> {
                 ColorPickerPopUp(context).run {
@@ -397,6 +470,7 @@ class Whiteboard(
                         object : ColorPickerPopUp.OnPickColorListener {
                             override fun onColorPicked(color: Int) {
                                 penColor = color
+                                paint.xfermode = null // +
                             }
 
                             override fun onCancel() {
