@@ -604,6 +604,7 @@ object UsageAnalytics {
             R.string.custom_button_delete_key,
             R.string.custom_button_enable_whiteboard_key,
             R.string.custom_button_toggle_stylus_key,
+            R.string.custom_button_show_hide_whiteboard_key,
             R.string.custom_button_save_whiteboard_key,
             R.string.custom_button_whiteboard_pen_color_key,
             R.string.custom_button_show_hide_whiteboard_key,
