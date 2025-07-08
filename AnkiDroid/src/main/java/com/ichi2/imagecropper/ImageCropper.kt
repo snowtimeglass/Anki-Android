@@ -18,14 +18,17 @@
 package com.ichi2.imagecropper
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -40,6 +43,7 @@ import com.canhub.cropper.CropImageView
 import com.ichi2.anki.R
 import com.ichi2.anki.snackbar.showSnackbar
 import com.ichi2.anki.withProgress
+import com.ichi2.themes.setTransparentStatusBar
 import com.ichi2.utils.ContentResolverUtil
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -71,6 +75,14 @@ class ImageCropper :
             supportActionBar?.title = ""
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
+
+        requireActivity().setTransparentStatusBar()
+//        val colorPrimary = getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
+//        // The getter for `window.statusBarColor` is deprecated as of API 30.
+//        // Only the setter is used here, which is safe in this context, so the warning is suppressed.
+//        @Suppress("DEPRECATION")
+//        requireActivity().window.statusBarColor = colorPrimary
+
         cropImageView =
             view.findViewById<CropImageView>(R.id.cropImageView).apply {
                 setOnSetImageUriCompleteListener(::onSetImageUriComplete)
@@ -245,4 +257,14 @@ class ImageCropper :
         val uriContent: Uri? = null,
         val uriPath: String? = null,
     ) : Parcelable
+}
+
+private fun getThemeColor(
+    context: Context,
+    attrResId: Int,
+): Int {
+    val typedValue = TypedValue()
+    val theme = context.theme
+    val found = theme.resolveAttribute(attrResId, typedValue, true)
+    return if (found) typedValue.data else Color.TRANSPARENT // fallback color
 }
