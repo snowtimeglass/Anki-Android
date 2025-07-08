@@ -34,6 +34,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.BundleCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -68,15 +69,33 @@ class ImageCropper :
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().setTransparentStatusBar()
+
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        toolbar.setBackgroundColor(Color.TRANSPARENT)
+
+//        val toolbar: MaterialToolbar = view.findViewById(R.id.toolbar)
         (activity as? AppCompatActivity)?.apply {
-            setSupportActionBar(view.findViewById(R.id.toolbar))
+            setSupportActionBar(toolbar)
             // there's no need for a title anyway and if we don't set it we end up with "AnkiDroid"
             // as the title which is useless
             supportActionBar?.title = ""
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
+//
+//        requireActivity().setTransparentStatusBar()
+//        val toolbar: MaterialToolbar = view.findViewById(R.id.toolbar)
+//        (requireActivity() as? AppCompatActivity)?.apply {
+//            setSupportActionBar(toolbar)
+//            supportActionBar?.title = ""
+//            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        }
 
-        requireActivity().setTransparentStatusBar()
+//        view.findViewById<Toolbar>(R.id.toolbar).setBackgroundColor(Color.TRANSPARENT)  // crash
+
+//        requireActivity().setTransparentStatusBar()
+
 //        val colorPrimary = getThemeColor(requireContext(), com.google.android.material.R.attr.colorPrimary)
 //        // The getter for `window.statusBarColor` is deprecated as of API 30.
 //        // Only the setter is used here, which is safe in this context, so the warning is suppressed.
