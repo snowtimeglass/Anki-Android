@@ -131,15 +131,31 @@ class ImageCropper :
         menu: Menu,
         menuInflater: MenuInflater,
     ) {
-        menu.clear()
-        // TODO make our own menu, we shouldn't rely on third party menu files
-        menuInflater.inflate(com.canhub.cropper.R.menu.crop_image_menu, menu)
+        menuInflater.inflate(R.menu.image_cropper_menu, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
         when (menuItem.itemId) {
-            com.canhub.cropper.R.id.crop_image_menu_crop -> {
-                Timber.d("Crop image clicked")
+            R.id.action_rotate -> {
+                Timber.d("Rotate clicked")
+                cropImageView.rotateImage(90)
+                true
+            }
+
+            R.id.action_flip_horizontally -> {
+                Timber.d("Flip_horizontally clicked")
+                cropImageView.flipImageHorizontally()
+                true
+            }
+
+            R.id.action_flip_vertically -> {
+                Timber.d("Flip_vertically clicked")
+                cropImageView.flipImageVertically()
+                true
+            }
+
+            R.id.action_done -> {
+                Timber.d("Done clicked")
                 val imageFormat = cropImageView.imageUri?.let { getImageCompressFormat(it) }
                 Timber.d("Compress format: $imageFormat")
                 if (imageFormat != null) {
@@ -147,25 +163,6 @@ class ImageCropper :
                         saveCompressFormat = imageFormat,
                     )
                 }
-                true
-            }
-
-            com.canhub.cropper.R.id.ic_rotate_right_24 -> {
-                Timber.d("Rotate right clicked")
-                cropImageView.rotateImage(90)
-                true
-            }
-
-            com.canhub.cropper.R.id.ic_flip_24_horizontally -> {
-                Timber.d("Flip horizontally clicked")
-
-                cropImageView.flipImageHorizontally()
-                true
-            }
-
-            com.canhub.cropper.R.id.ic_flip_24_vertically -> {
-                Timber.d("Flip vertically clicked")
-                cropImageView.flipImageVertically()
                 true
             }
 
