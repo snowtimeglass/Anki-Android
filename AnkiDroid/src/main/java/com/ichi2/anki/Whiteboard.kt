@@ -39,7 +39,6 @@ import android.widget.LinearLayout
 import androidx.annotation.CheckResult
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
-import androidx.core.graphics.scale
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.time.Time
 import com.ichi2.anki.common.time.getTimestamp
@@ -65,7 +64,7 @@ class Whiteboard(
     inverted: Boolean,
 ) : View(activity, null) {
     private val paint: Paint
-    private val undo = UndoList()
+    val undo = UndoList()
     private lateinit var bitmap: Bitmap
     private lateinit var canvas: Canvas
     private val path: Path
@@ -122,7 +121,7 @@ class Whiteboard(
         val x = event.x
         val y = event.y
         if (event.getToolType(event.actionIndex) == MotionEvent.TOOL_TYPE_ERASER || reviewerEraserModeIsToggledOn) {
-            eraseTouchedStroke(event)
+            eraseTouchedPath(event)
             return true
         }
         if (event.getToolType(event.actionIndex) != MotionEvent.TOOL_TYPE_STYLUS && toggleStylus) {
@@ -131,7 +130,7 @@ class Whiteboard(
         return when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-                    eraseTouchedStroke(event)
+                    eraseTouchedPath(event)
                 } else {
                     drawStart(x, y)
                     invalidate()
@@ -140,7 +139,7 @@ class Whiteboard(
             }
             MotionEvent.ACTION_MOVE -> {
                 if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-                    eraseTouchedStroke(event)
+                    eraseTouchedPath(event)
                     return true
                 }
                 if (isCurrentlyDrawing) {
@@ -169,7 +168,7 @@ class Whiteboard(
             }
             211, 213 -> {
                 if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-                    eraseTouchedStroke(event)
+                    eraseTouchedPath(event)
                 }
                 true
             }
@@ -194,17 +193,17 @@ class Whiteboard(
         }
 
     /**
-     * Erase touched stroke (= path or point)
+     * Erase touched path
      * (by toggling the eraser action button on
      *  or by using the eraser button on the stylus pen
      *  or by using the digital eraser)
      */
-    private fun eraseTouchedStroke(event: MotionEvent) {
-        if (!undoEmpty()) {
+    private fun eraseTouchedPath(event: MotionEvent) {
+        if (!strokeEmpty()) { // 描線が存在する場合。
             val didErase = undo.erase(event.x.toInt(), event.y.toInt())
             if (didErase) {
                 undo.apply()
-                if (undoEmpty()) {
+                if (strokeEmpty()) {
                     ankiActivity.invalidateOptionsMenu()
                 }
             }
@@ -225,16 +224,79 @@ class Whiteboard(
      * Undo the last stroke
      */
     fun undo() {
-        undo.pop()
-        undo.apply()
-        if (undoEmpty()) {
+        if (undo.size() > 0) {
+            val lastAction = undo.pop() // 最後のアクションを取得 * undo.pop()を実行して戻り値を取得。。。
+
+            // 最後のアクションがEraseAction なら削除された描線を復元する
+            if (lastAction is EraseAction) {
+                // showThemedToast(context, "lastAction is EraseAction", true)
+
+                // EraseActionクラス の undo([対象リスト]) のメソッドを適用
+                // 最後のアクションのerasedActionsをUndoListのlistに追加する
+//                lastAction.undo(undo.list)
+                // この動作不適切？　UndoしてRedoリストに入れた消去アクションをlistにも入れてしまっている？
+
+                // 消去されたアクションを `list` に戻す（apply() で消えないようにする）
+                // undo.list.addAll(lastAction.erasedActions)
+
+                // **復元順序を保証しながら元の位置に戻す**
+                lastAction.erasedActions.reversed().forEach { erasedAction ->
+                    val index = erasedAction.originalIndex ?: undo.list.size
+                    undo.list.add(index, erasedAction)
+                }
+                // undo.redoList.add(lastAction) // 最後のアクションであるEraseActionをredoListに追加
+            }
+            // showThemedToast(context, "lastAction is NOT EraseAction", true)
+
+            val redoList = undo.redoList
+            // redoListにlastActionを追加。
+            redoList.add(lastAction!!)
+
+            undo.apply() // 変更を適用
+//            if (undoEmpty()) {
             ankiActivity.invalidateOptionsMenu()
+//            }
         }
     }
 
-    /** @return Whether there are strokes to undo
+    fun redo() {
+        if (undo.redoList.isNotEmpty()) { // ※EraseActionをredoListに入れない方針の場合はelseの場合も対処する必要あり。。。
+            val lastUndoneAction = undo.redo() // 通常の描線アクションについてのRedo対象リストの最後を削除して取得。。。
+
+//            if (redoAction is EraseAction) {
+// //            redoAction.redo(undo.list) // `EraseAction` の `redo()` を適用
+//
+//                // 再び削除を適用（`erasedActions` を `undo.list` から削除）
+//                undo.list.removeAll(redoAction.erasedActions)
+            // 通常の描線アクションをlistに戻す
+
+            if (lastUndoneAction is EraseAction) {
+                undo.list.removeAll(lastUndoneAction.erasedActions) // 直前のアンドゥで復元された描線を再削除
+            }
+
+            undo.list.add(lastUndoneAction!!)
+//        } else {
+//            // undo.redo() // UndoList の redo メソッドを呼び出す
+//            // if (redoAction != null) {
+//
+//            // }
+//            // もし redoList（通常の描線アクション専用）が空の場合、過去の消去アクションを再適用する
+//            val lastUndo = undo.list.lastOrNull()
+//            if (lastUndo is EraseAction) {
+//                undo.list.removeAll(lastUndo.erasedActions) // 直前のアンドゥで復元された描線を再削除
+//            }
+        }
+        undo.apply() // +++ Redo後に画面を再描画
+        ankiActivity.invalidateOptionsMenu()
+    }
+
+    /** @return Whether there are actions (stroke or erase actions) to undo
      */
     fun undoEmpty(): Boolean = undo.empty()
+
+    /** @return Whether there are strokes to undo
+     */
+    fun strokeEmpty(): Boolean = undo.strokeEmpty()
 
     private fun createBitmap(
         w: Int,
@@ -269,7 +331,7 @@ class Whiteboard(
             Timber.w("Width or height <= 0: w: $w h: $h Bitmap couldn't be created with the new size")
             return
         }
-        val scaledBitmap: Bitmap = bitmap.scale(w, h, filter = true)
+        val scaledBitmap: Bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true)
         bitmap = scaledBitmap
         canvas = Canvas(bitmap)
     }
@@ -308,7 +370,7 @@ class Whiteboard(
         undo.add(action)
         // kill the path so we don't double draw
         path.reset()
-        if (undo.size() == 1) {
+        if (undo.size() == 1 || undo.redoEmpty()) {
             ankiActivity.invalidateOptionsMenu()
         }
     }
@@ -445,27 +507,57 @@ class Whiteboard(
      * Keep a list of all points and paths so that the last stroke can be undone
      * pop() removes the last stroke from the list, and apply() redraws it to whiteboard.
      */
-    private inner class UndoList {
-        private val list: MutableList<WhiteboardAction> = ArrayList()
+
+    inner class UndoList {
+        internal val list: MutableList<WhiteboardAction> = ArrayList()
+        val redoList: MutableList<WhiteboardAction> = ArrayList() // Redo用のリスト(Undoで消去されたアクションを保存するリスト）を追加
 
         fun add(action: WhiteboardAction) {
             list.add(action)
+            redoList.clear() // 新しいアクションが追加されたらRedo履歴はクリア
         }
 
         fun clear() {
             list.clear()
+            redoList.clear()
         }
 
         fun size(): Int = list.size
 
-        fun pop() {
-            list.removeAt(list.size - 1)
-        }
+        fun pop(): WhiteboardAction? =
+            if (list.isNotEmpty()) {
+                val action = list.removeAt(list.size - 1) // 右側のコードはlistの最後の要素を削除して、その要素（最後のアクション）を戻り値とする。
+
+//                if (action is EraseAction) {
+//                    redoList.add(EraseAction(action.erasedActions)) // ++ EraseAction も redoList に追加
+//                } else {
+                // 上記のremoveAt()でlistから削除した最後の要素を、redoListに追加する。
+                // つまり、listの最後の要素をredoListに移動する
+                // （UndoしたアクションをRedoリストに保存)
+//                redoList.add(action)
+//                } // UndoしたアクションをRedoリストに保存
+                action // リストの最後の要素を戻り値として返す //
+            } else {
+                null
+            }
+
+        // redoリストの最後のアクションを削除。
+        // そのアクションを戻り値として返す
+        fun redo(): WhiteboardAction? =
+            if (redoList.isNotEmpty()) {
+                val action = redoList.removeAt(redoList.size - 1) // Redoリストの最後のアクションを削除して戻り値として取り出す
+                // list.add(action) // 元に戻すために、list（Undo対象となるアクションのリスト）に追加
+                action // Redoしたアクションを戻り値として返す
+            } else {
+                null
+            }
 
         fun apply() {
             bitmap.eraseColor(0)
             for (action in list) {
-                action.apply(canvas)
+                if (action !is EraseAction) {
+                    action.apply(canvas)
+                }
             }
             invalidate()
         }
@@ -476,6 +568,9 @@ class Whiteboard(
             y: Int,
         ): Boolean {
             var didErase = false
+            val erasedActions = mutableListOf<WhiteboardAction>() // 消去したアクションを一時的に保存するリスト
+            // ↑ 消去されたアクションを erasedActions に追加し、最後に EraseAction(erasedActions) を UndoList に追加する。
+            //   EraseActionクラスが持つリストerasedActionsとは別。。。
             val clip = Region(0, 0, displayDimensions.x, displayDimensions.y)
             val eraserPath = Path()
             eraserPath.addRect((x - 10).toFloat(), (y - 10).toFloat(), (x + 10).toFloat(), (y + 10).toFloat(), Path.Direction.CW)
@@ -487,10 +582,11 @@ class Whiteboard(
             var lineRegion = Region()
 
             // we delete elements while iterating, so we need to use an iterator in order to avoid java.util.ConcurrentModificationException
-            val iterator = list.iterator()
+            val iterator = list.iterator() // listからiteratorを取得（listの要素を安全に走査するための仕組みを取得）
             while (iterator.hasNext()) {
-                val action = iterator.next()
+                val action = iterator.next() // 次のWhiteboardActionを取得
                 val path = action.path
+                val point = action.point
                 if (path != null) { // → line
                     val lineRegionSuccess = lineRegion.setPath(path, clip)
                     if (!lineRegionSuccess) {
@@ -508,32 +604,53 @@ class Whiteboard(
                                 ),
                             )
                     }
-                } else { // → point
-                    val p = action.point
-                    lineRegion = Region(p!!.x, p.y, p.x + 1, p.y + 1)
+                } else if (point != null) { // → point
+                    lineRegion = Region(point.x, point.y, point.x + 1, point.y + 1)
                 }
                 if (!lineRegion.quickReject(eraserRegion) && lineRegion.op(eraserRegion, Region.Op.INTERSECT)) {
-                    iterator.remove()
+                    action.originalIndex = undo.list.indexOf(action) // ← 消去前の位置を記憶
+                    erasedActions.add(action) // 消去前に（描線アクションを。。。erasedActionsに）保存。同じ位置に描線が重なっている場合は複数のアクションになる。。。
+                    iterator.remove() // 現在の要素を削除
                     didErase = true
+                }
+            }
+
+            if (didErase) {
+                val redoListIsEmptyBeforeAddingAction = redoEmpty()
+
+//                //Debug
+//                showThemedToast(context, "redoEmpty: $redoListIsEmptyBeforeAddingAction", true)
+
+                undo.add(EraseAction(erasedActions)) // UndoListのlist に、erasedActionsのリストをもったEraseActionインスタンスを追加
+
+                if (!redoListIsEmptyBeforeAddingAction) { // 上記の undo.add(...)をする前にredoListに要素が入っていた場合。
+                    // undo.add(EraseAction(erasedActions))によってredoListは空になるので、それに併せてホワイトボード用Redoアイコンを無効に。
+                    ankiActivity.invalidateOptionsMenu()
                 }
             }
             return didErase
         }
 
         fun empty(): Boolean = list.isEmpty()
+
+        fun strokeEmpty(): Boolean = list.none { it !is EraseAction } // 描線が一つもないか、一つでもあるかを判定するメソッド
+
+        fun redoEmpty(): Boolean = redoList.isEmpty() // Redoが可能か判定するメソッド
     }
 
-    private interface WhiteboardAction {
+    interface WhiteboardAction {
         fun apply(canvas: Canvas)
 
         val path: Path?
         val point: Point?
+        var originalIndex: Int? // ← 追加
     }
 
     private class DrawPoint(
         private val x: Float,
         private val y: Float,
         private val paint: Paint,
+        override var originalIndex: Int? = null,
     ) : WhiteboardAction {
         override fun apply(canvas: Canvas) {
             canvas.drawPoint(x, y, paint)
@@ -549,6 +666,7 @@ class Whiteboard(
     private class DrawPath(
         override val path: Path,
         private val paint: Paint,
+        override var originalIndex: Int? = null,
     ) : WhiteboardAction {
         override fun apply(canvas: Canvas) {
             canvas.drawPath(path, paint)
@@ -556,6 +674,53 @@ class Whiteboard(
 
         override val point: Point?
             get() = null
+    }
+
+    private class EraseAction(
+        val erasedActions: List<WhiteboardAction>, // // 消去されたアクションを保持
+        // 1. プロパティの定義
+        // * val erasedActions:EraseAction 内のプロパティ（属性）として erasedActions を定義しています。
+        // このプロパティは、List<WhiteboardAction> 型で、WhiteboardAction型の要素を持つリストです。
+        // * val キーワードは、クラスインスタンスが生成される際に一度だけ値が設定され、その後変更できない 読み取り専用プロパティ を意味します。
+        // 2. クラスの状態の保持
+        // * erasedActions は、EraseAction のインスタンスが保持するデータの一部です。
+        // つまり、EraseAction のオブジェクトが持っている状態（この場合、List<WhiteboardAction> 型のデータ）を保持します。
+        // * erasedActions を通じて、このクラスのインスタンスが保持しているリストにアクセスでき、他のクラスやメソッドと共有できます。
+        // 3. 引数として受け取ったリストの保持
+        // * コンストラクタで引数として受け取った List<WhiteboardAction> 型のデータが、そのまま erasedActions プロパティに格納されます。
+        // * つまり、EraseAction のインスタンスが作成される際に、呼び出し元から渡されたリストを保持する役割を担います。
+        // 4. 他のメソッドで利用可能
+        // * EraseAction はクラス内の他のメソッドからアクセス可能で、このリストに対する操作（要素の追加、削除、検索など）を行うことができます。
+        // * EraseAction のデータを使って、クラスの振る舞い（例えば、リストに格納されている要素に基づいて何かを処理する）を変更することができます。
+    ) : WhiteboardAction {
+        override fun apply(canvas: Canvas) {
+            // `apply()` では何もしない（削除は `erase()` で既に処理済み）
+        }
+
+        override val path: Path?
+            get() = null // EraseAction は線を持たない
+
+        override val point: Point?
+            get() = null // EraseAction は点も持たない
+
+        override var originalIndex: Int? = null
+
+        fun undo(list: MutableList<WhiteboardAction>) {
+            // 削除されたアクションをリストに復元
+            // インスタンスの`erasedActions` に保存されているアクションを
+            // カッコ内で指定したリストに戻す
+            list.addAll(erasedActions)
+            // 例えば二つの線が交差する点をタップして両方の線を消した場合に、
+            // 　erasedActionsの中身は複数になる(が一般的には一つの線）。。。
+        }
+
+        fun redo(list: MutableList<WhiteboardAction>) {
+            // 削除したアクションを再び削除する
+            // `erasedActions` に保存されているアクションを　listから 再び削除する
+            list.removeAll(erasedActions)
+            // 例えば二つの線が交差する点をタップして両方の線を消した場合に、
+            // 　erasedActionsの中身は複数になる(が一般的には一つの線）。。。
+        }
     }
 
     @Throws(FileNotFoundException::class)
