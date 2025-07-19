@@ -121,7 +121,7 @@ class Whiteboard(
         val x = event.x
         val y = event.y
         if (event.getToolType(event.actionIndex) == MotionEvent.TOOL_TYPE_ERASER || reviewerEraserModeIsToggledOn) {
-            eraseTouchedPath(event)
+            eraseTouchedStroke(event)
             return true
         }
         if (event.getToolType(event.actionIndex) != MotionEvent.TOOL_TYPE_STYLUS && toggleStylus) {
@@ -130,7 +130,7 @@ class Whiteboard(
         return when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-                    eraseTouchedPath(event)
+                    eraseTouchedStroke(event)
                 } else {
                     drawStart(x, y)
                     invalidate()
@@ -139,7 +139,7 @@ class Whiteboard(
             }
             MotionEvent.ACTION_MOVE -> {
                 if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-                    eraseTouchedPath(event)
+                    eraseTouchedStroke(event)
                     return true
                 }
                 if (isCurrentlyDrawing) {
@@ -168,7 +168,7 @@ class Whiteboard(
             }
             211, 213 -> {
                 if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-                    eraseTouchedPath(event)
+                    eraseTouchedStroke(event)
                 }
                 true
             }
@@ -193,12 +193,12 @@ class Whiteboard(
         }
 
     /**
-     * Erase touched path
+     * Erase touched stroke (= path or point)
      * (by toggling the eraser action button on
      *  or by using the eraser button on the stylus pen
      *  or by using the digital eraser)
      */
-    private fun eraseTouchedPath(event: MotionEvent) {
+    private fun eraseTouchedStroke(event: MotionEvent) {
         if (!strokeEmpty()) { // 描線が存在する場合。
             val didErase = undo.erase(event.x.toInt(), event.y.toInt())
             if (didErase) {
