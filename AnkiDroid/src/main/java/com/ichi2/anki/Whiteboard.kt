@@ -78,6 +78,8 @@ class Whiteboard(
     private var secondFingerY = 0f
     private var secondFingerPointerId = 0
     private var secondFingerWithinTapTolerance = false
+    private var lastUndoListEmpty = true
+    private var lastUndoWasEraseAction = false
 
     var reviewerEraserModeIsToggledOn = false
     var toggleStylus = false
@@ -204,7 +206,9 @@ class Whiteboard(
             if (didErase) {
                 undo.apply()
                 // if (strokeEmpty()) { 　// 2025－07－20 EraserActionをUndoした後に、ラベルが更新されるようにコメントアウトした。
-                ankiActivity.invalidateOptionsMenu()
+                val currentUndoIsErase = isNextUndoEraseAction()
+                maybeInvalidateOptionsMenu()
+
                 // }
             }
         }
@@ -250,7 +254,8 @@ class Whiteboard(
 
             undo.apply() // 変更を適用
 //            if (undoEmpty()) {
-            ankiActivity.invalidateOptionsMenu()
+            maybeInvalidateOptionsMenu()
+
 //            }
         }
     }
@@ -340,7 +345,7 @@ class Whiteboard(
         // kill the path so we don't double draw
         path.reset()
         // if (undo.size() == 1) { // comment out 2025-07-29 Strokeアクション後にUndoラベルを、 Undo erase strokeラベルかもしれない状態から Undo Strokeラベルに切り替えるため
-        ankiActivity.invalidateOptionsMenu()
+        maybeInvalidateOptionsMenu()
         // }
     }
 
@@ -665,6 +670,18 @@ class Whiteboard(
 
     fun interface OnPaintColorChangeListener {
         fun onPaintColorChange(color: Int?)
+    }
+
+    private fun maybeInvalidateOptionsMenu() {
+        val currentUndoIsErase = isNextUndoEraseAction()
+        val undoListIsEmpty = undo.list.isEmpty()
+
+        // Undoリストの空/非空 または eraseアクションかどうかに変化があったときだけ invalidate
+        if (lastUndoWasEraseAction != currentUndoIsErase || lastUndoListEmpty != undoListIsEmpty) {
+            lastUndoWasEraseAction = currentUndoIsErase
+            lastUndoListEmpty = undoListIsEmpty
+            ankiActivity.invalidateOptionsMenu()
+        }
     }
 
     companion object {
