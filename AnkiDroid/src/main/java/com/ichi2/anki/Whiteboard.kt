@@ -248,46 +248,11 @@ class Whiteboard(
             }
             // showThemedToast(context, "lastAction is NOT EraseAction", true)
 
-            val redoList = undo.redoList
-            // redoListにlastActionを追加。
-            redoList.add(lastAction!!)
-
             undo.apply() // 変更を適用
 //            if (undoEmpty()) {
             ankiActivity.invalidateOptionsMenu()
 //            }
         }
-    }
-
-    fun redo() {
-        if (undo.redoList.isNotEmpty()) { // ※EraseActionをredoListに入れない方針の場合はelseの場合も対処する必要あり。。。
-            val lastUndoneAction = undo.redo() // 通常の描線アクションについてのRedo対象リストの最後を削除して取得。。。
-
-//            if (redoAction is EraseAction) {
-// //            redoAction.redo(undo.list) // `EraseAction` の `redo()` を適用
-//
-//                // 再び削除を適用（`erasedActions` を `undo.list` から削除）
-//                undo.list.removeAll(redoAction.erasedActions)
-            // 通常の描線アクションをlistに戻す
-
-            if (lastUndoneAction is EraseAction) {
-                undo.list.removeAll(lastUndoneAction.erasedActions) // 直前のアンドゥで復元された描線を再削除
-            }
-
-            undo.list.add(lastUndoneAction!!)
-//        } else {
-//            // undo.redo() // UndoList の redo メソッドを呼び出す
-//            // if (redoAction != null) {
-//
-//            // }
-//            // もし redoList（通常の描線アクション専用）が空の場合、過去の消去アクションを再適用する
-//            val lastUndo = undo.list.lastOrNull()
-//            if (lastUndo is EraseAction) {
-//                undo.list.removeAll(lastUndo.erasedActions) // 直前のアンドゥで復元された描線を再削除
-//            }
-        }
-        undo.apply() // +++ Redo後に画面を再描画
-        ankiActivity.invalidateOptionsMenu()
     }
 
     /** @return Whether there are actions (stroke or erase actions) to undo
@@ -370,7 +335,7 @@ class Whiteboard(
         undo.add(action)
         // kill the path so we don't double draw
         path.reset()
-        if (undo.size() == 1 || undo.redoEmpty()) {
+        if (undo.size() == 1) {
             ankiActivity.invalidateOptionsMenu()
         }
     }
@@ -510,16 +475,13 @@ class Whiteboard(
 
     inner class UndoList {
         internal val list: MutableList<WhiteboardAction> = ArrayList()
-        val redoList: MutableList<WhiteboardAction> = ArrayList() // Redo用のリスト(Undoで消去されたアクションを保存するリスト）を追加
 
         fun add(action: WhiteboardAction) {
             list.add(action)
-            redoList.clear() // 新しいアクションが追加されたらRedo履歴はクリア
         }
 
         fun clear() {
             list.clear()
-            redoList.clear()
         }
 
         fun size(): Int = list.size
@@ -537,17 +499,6 @@ class Whiteboard(
 //                redoList.add(action)
 //                } // UndoしたアクションをRedoリストに保存
                 action // リストの最後の要素を戻り値として返す //
-            } else {
-                null
-            }
-
-        // redoリストの最後のアクションを削除。
-        // そのアクションを戻り値として返す
-        fun redo(): WhiteboardAction? =
-            if (redoList.isNotEmpty()) {
-                val action = redoList.removeAt(redoList.size - 1) // Redoリストの最後のアクションを削除して戻り値として取り出す
-                // list.add(action) // 元に戻すために、list（Undo対象となるアクションのリスト）に追加
-                action // Redoしたアクションを戻り値として返す
             } else {
                 null
             }
@@ -616,17 +567,7 @@ class Whiteboard(
             }
 
             if (didErase) {
-                val redoListIsEmptyBeforeAddingAction = redoEmpty()
-
-//                //Debug
-//                showThemedToast(context, "redoEmpty: $redoListIsEmptyBeforeAddingAction", true)
-
                 undo.add(EraseAction(erasedActions)) // UndoListのlist に、erasedActionsのリストをもったEraseActionインスタンスを追加
-
-                if (!redoListIsEmptyBeforeAddingAction) { // 上記の undo.add(...)をする前にredoListに要素が入っていた場合。
-                    // undo.add(EraseAction(erasedActions))によってredoListは空になるので、それに併せてホワイトボード用Redoアイコンを無効に。
-                    ankiActivity.invalidateOptionsMenu()
-                }
             }
             return didErase
         }
@@ -634,8 +575,6 @@ class Whiteboard(
         fun empty(): Boolean = list.isEmpty()
 
         fun strokeEmpty(): Boolean = list.none { it !is EraseAction } // 描線が一つもないか、一つでもあるかを判定するメソッド
-
-        fun redoEmpty(): Boolean = redoList.isEmpty() // Redoが可能か判定するメソッド
     }
 
     interface WhiteboardAction {
@@ -710,14 +649,6 @@ class Whiteboard(
             // インスタンスの`erasedActions` に保存されているアクションを
             // カッコ内で指定したリストに戻す
             list.addAll(erasedActions)
-            // 例えば二つの線が交差する点をタップして両方の線を消した場合に、
-            // 　erasedActionsの中身は複数になる(が一般的には一つの線）。。。
-        }
-
-        fun redo(list: MutableList<WhiteboardAction>) {
-            // 削除したアクションを再び削除する
-            // `erasedActions` に保存されているアクションを　listから 再び削除する
-            list.removeAll(erasedActions)
             // 例えば二つの線が交差する点をタップして両方の線を消した場合に、
             // 　erasedActionsの中身は複数になる(が一般的には一つの線）。。。
         }
