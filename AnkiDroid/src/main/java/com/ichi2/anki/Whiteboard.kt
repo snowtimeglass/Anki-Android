@@ -203,9 +203,9 @@ class Whiteboard(
             val didErase = undo.erase(event.x.toInt(), event.y.toInt())
             if (didErase) {
                 undo.apply()
-                if (strokeEmpty()) {
-                    ankiActivity.invalidateOptionsMenu()
-                }
+                // if (strokeEmpty()) { 　// 2025－07－20 EraserActionをUndoした後に、ラベルが更新されるようにコメントアウトした。
+                ankiActivity.invalidateOptionsMenu()
+                // }
             }
         }
     }
@@ -262,6 +262,10 @@ class Whiteboard(
     /** @return Whether there are strokes to undo
      */
     fun strokeEmpty(): Boolean = undo.strokeEmpty()
+
+    /** @return Whether the next undoable action (= the last action in the undo list) is erasing touched stroke action
+     */
+    fun isNextUndoEraseAction(): Boolean = undo.list.lastOrNull() is EraseAction
 
     private fun createBitmap(
         w: Int,
@@ -335,9 +339,9 @@ class Whiteboard(
         undo.add(action)
         // kill the path so we don't double draw
         path.reset()
-        if (undo.size() == 1) {
-            ankiActivity.invalidateOptionsMenu()
-        }
+        // if (undo.size() == 1) { // comment out 2025-07-29 Strokeアクション後にUndoラベルを、 Undo erase strokeラベルかもしれない状態から Undo Strokeラベルに切り替えるため
+        ankiActivity.invalidateOptionsMenu()
+        // }
     }
 
     private fun drawAbort() {
