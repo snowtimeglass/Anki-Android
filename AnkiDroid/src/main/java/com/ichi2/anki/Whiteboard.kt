@@ -643,15 +643,6 @@ class Whiteboard(
             get() = null // EraseAction は点も持たない
 
         override var originalIndex: Int? = null
-
-        fun undo(list: MutableList<WhiteboardAction>) {
-            // 削除されたアクションをリストに復元
-            // インスタンスの`erasedActions` に保存されているアクションを
-            // カッコ内で指定したリストに戻す
-            list.addAll(erasedActions)
-            // 例えば二つの線が交差する点をタップして両方の線を消した場合に、
-            // 　erasedActionsの中身は複数になる(が一般的には一つの線）。。。
-        }
     }
 
     @Throws(FileNotFoundException::class)
