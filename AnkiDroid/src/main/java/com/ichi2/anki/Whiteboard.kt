@@ -207,7 +207,7 @@ class Whiteboard(
                 undo.apply()
                 // if (strokeEmpty()) { 　// 2025－07－20 EraserActionをUndoした後に、ラベルが更新されるようにコメントアウトした。
                 val currentUndoIsErase = isNextUndoEraseAction()
-                maybeInvalidateOptionsMenu()
+                invalidateOptionsMenuOnlyIfNecessary()
 
                 // }
             }
@@ -254,7 +254,7 @@ class Whiteboard(
 
             undo.apply() // 変更を適用
 //            if (undoEmpty()) {
-            maybeInvalidateOptionsMenu()
+            invalidateOptionsMenuOnlyIfNecessary()
 
 //            }
         }
@@ -345,7 +345,7 @@ class Whiteboard(
         // kill the path so we don't double draw
         path.reset()
         // if (undo.size() == 1) { // comment out 2025-07-29 Strokeアクション後にUndoラベルを、 Undo erase strokeラベルかもしれない状態から Undo Strokeラベルに切り替えるため
-        maybeInvalidateOptionsMenu()
+        invalidateOptionsMenuOnlyIfNecessary()
         // }
     }
 
@@ -672,7 +672,7 @@ class Whiteboard(
         fun onPaintColorChange(color: Int?)
     }
 
-    private fun maybeInvalidateOptionsMenu() {
+    private fun invalidateOptionsMenuOnlyIfNecessary() {
         val currentUndoIsErase = isNextUndoEraseAction()
         val undoListIsEmpty = undo.list.isEmpty()
 
