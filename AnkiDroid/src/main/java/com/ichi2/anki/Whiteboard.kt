@@ -676,8 +676,8 @@ class Whiteboard(
         val currentUndoIsErase = isNextUndoEraseAction()
         val undoListIsEmpty = undo.list.isEmpty()
 
-        // Undoリストの空/非空 または eraseアクションかどうかに変化があったときだけ invalidate
-        if (lastUndoWasEraseAction != currentUndoIsErase || lastUndoListEmpty != undoListIsEmpty) {
+        // Undoリストの空/非空 または eraseアクションかどうかに変化があったとき、またはストロークが空になったときだけ invalidate
+        if (lastUndoWasEraseAction != currentUndoIsErase || lastUndoListEmpty != undoListIsEmpty || strokeEmpty()) {
             lastUndoWasEraseAction = currentUndoIsErase
             lastUndoListEmpty = undoListIsEmpty
             ankiActivity.invalidateOptionsMenu()

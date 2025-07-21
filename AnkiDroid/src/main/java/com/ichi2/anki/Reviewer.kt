@@ -865,6 +865,12 @@ open class Reviewer :
                 if (!actionButtons.status.toggleEraserIsDisabled()) {
                     toggleEraserIcon.isVisible = true
                 }
+
+                // Disable whiteboard eraser button if no strokes exist
+                if (whiteboard?.strokeEmpty() == true) {
+                    isEraserMode = false
+                    whiteboard?.reviewerEraserModeIsToggledOn = false
+                }
             } else {
                 // Disable whiteboard eraser action button
                 isEraserMode = false
