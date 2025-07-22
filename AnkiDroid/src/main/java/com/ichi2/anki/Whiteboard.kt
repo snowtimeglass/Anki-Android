@@ -78,8 +78,8 @@ class Whiteboard(
     private var secondFingerY = 0f
     private var secondFingerPointerId = 0
     private var secondFingerWithinTapTolerance = false
-    private var lastUndoListEmpty = true
-    private var lastUndoWasEraseAction = false
+    private var wasPreviousUndoListEmpty = true
+    private var wasPreviousUndoEraseAction = false
 
     var reviewerEraserModeIsToggledOn = false
     var toggleStylus = false
@@ -206,7 +206,7 @@ class Whiteboard(
             if (didErase) {
                 undo.apply()
                 // if (strokeEmpty()) { 　// 2025－07－20 EraserActionをUndoした後に、ラベルが更新されるようにコメントアウトした。
-                val currentUndoIsErase = isNextUndoEraseAction()
+
                 invalidateOptionsMenuOnlyIfNecessary()
 
                 // }
@@ -673,13 +673,16 @@ class Whiteboard(
     }
 
     private fun invalidateOptionsMenuOnlyIfNecessary() {
-        val currentUndoIsErase = isNextUndoEraseAction()
-        val undoListIsEmpty = undo.list.isEmpty()
+        // Refresh the action bar only if either of the following changes occurs:
+        //  - whether the Undo list is empty/non-empty (Need to show/hide the whiteboard-undo option and the eraser option)
+        //  - whether the last action is stroke/erase-stroke (Need to update the undo option's title)
+        //  - By erasing strokes, no stroke is left (Need to toggle the eraser option off)
+        if (undo.list.isEmpty() != wasPreviousUndoListEmpty || isNextUndoEraseAction() != wasPreviousUndoEraseAction || strokeEmpty()) {
+            // Save the current states as the previous states, for the next time of using this function
+            wasPreviousUndoListEmpty = undo.list.isEmpty()
+            wasPreviousUndoEraseAction = isNextUndoEraseAction()
 
-        // Undoリストの空/非空 または eraseアクションかどうかに変化があったとき、またはストロークが空になったときだけ invalidate
-        if (lastUndoWasEraseAction != currentUndoIsErase || lastUndoListEmpty != undoListIsEmpty || strokeEmpty()) {
-            lastUndoWasEraseAction = currentUndoIsErase
-            lastUndoListEmpty = undoListIsEmpty
+            // Refresh the action bar
             ankiActivity.invalidateOptionsMenu()
         }
     }
