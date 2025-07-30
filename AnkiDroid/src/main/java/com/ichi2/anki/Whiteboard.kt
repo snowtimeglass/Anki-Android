@@ -207,7 +207,7 @@ class Whiteboard(
                 undo.apply()
                 // if (strokeEmpty()) { 　// 2025－07－20 EraserActionをUndoした後に、ラベルが更新されるようにコメントアウトした。
 
-                invalidateOptionsMenuOnlyIfNecessary()
+                refreshActionBarOnlyIfNecessary()
 
                 // }
             }
@@ -254,7 +254,7 @@ class Whiteboard(
 
             undo.apply() // 変更を適用
 //            if (undoEmpty()) {
-            invalidateOptionsMenuOnlyIfNecessary()
+            refreshActionBarOnlyIfNecessary()
 
 //            }
         }
@@ -345,7 +345,7 @@ class Whiteboard(
         // kill the path so we don't double draw
         path.reset()
         // if (undo.size() == 1) { // comment out 2025-07-29 Strokeアクション後にUndoラベルを、 Undo erase strokeラベルかもしれない状態から Undo Strokeラベルに切り替えるため
-        invalidateOptionsMenuOnlyIfNecessary()
+        refreshActionBarOnlyIfNecessary()
         // }
     }
 
@@ -672,7 +672,7 @@ class Whiteboard(
         fun onPaintColorChange(color: Int?)
     }
 
-    private fun invalidateOptionsMenuOnlyIfNecessary() {
+    private fun refreshActionBarOnlyIfNecessary() {
         // Refresh the action bar only if either of the following changes occurs:
         //  - whether the Undo list is empty/non-empty (Need to show/hide the whiteboard-undo option and the eraser option)
         //  - whether the last action is stroke/erase-stroke (Need to update the undo option's title)
