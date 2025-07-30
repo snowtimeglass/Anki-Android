@@ -39,6 +39,7 @@ import android.widget.LinearLayout
 import androidx.annotation.CheckResult
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
+import androidx.core.graphics.scale
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.time.Time
 import com.ichi2.anki.common.time.getTimestamp
@@ -305,7 +306,7 @@ class Whiteboard(
             Timber.w("Width or height <= 0: w: $w h: $h Bitmap couldn't be created with the new size")
             return
         }
-        val scaledBitmap: Bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true)
+        val scaledBitmap: Bitmap = bitmap.scale(w, h, filter = true)
         bitmap = scaledBitmap
         canvas = Canvas(bitmap)
     }
