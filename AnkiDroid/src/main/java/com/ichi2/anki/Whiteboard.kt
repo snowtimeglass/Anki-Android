@@ -226,18 +226,19 @@ class Whiteboard(
      * Undo the last stroke
      */
     fun undo() {
-        if (undo.size() > 0) {
-            val lastAction = undo.pop() // Execute undo.pop() and return value
-            if (lastAction is EraseAction) {
-                // Restore each erased stroke back into the undo list at its original position.
-                lastAction.erasedActions.reversed().forEach { erasedAction ->
-                    val index = erasedAction.originalIndex ?: undo.list.size
-                    undo.list.add(index, erasedAction)
-                }
-            }
-            undo.apply()
-            refreshActionBarOnlyIfNecessary()
+        if (undoEmpty()) {
+            return
         }
+        val lastAction = undo.pop() // Execute undo.pop() and return value
+        if (lastAction is EraseAction) {
+            // Restore each erased stroke back into the undo list at its original position.
+            lastAction.erasedActions.reversed().forEach { erasedAction ->
+                val index = erasedAction.originalIndex ?: undo.list.size
+                undo.list.add(index, erasedAction)
+            }
+        }
+        undo.apply()
+        refreshActionBarOnlyIfNecessary()
     }
 
     /** @return Whether there are actions (stroke or erase actions) to undo
