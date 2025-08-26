@@ -231,7 +231,16 @@ class Whiteboard(
         }
         val lastAction = undo.pop() // Execute undo.pop() and return value
         if (lastAction is EraseAction) {
-            // Restore each erased stroke back into the undo list at its original position.
+            // Restore each erased stroke back into the undo list
+            // at its original position by using originalIndex.
+            // Otherwise, the re-drawn stroke would be merely appended to the end of the undo list.
+            // Accordingly, the next undo would remove the re-drawn stroke,
+            // forgetting the stroke's original position in the order.
+            //
+            // (Suppose that a user draws stroke A, B, C, D in this order, and then erase B, undo erase B.
+            //  The subsequent "Undo stroke" order should be D, C, B, A: the reverse order of the strokes.
+            //  However, if originalIndex were not used here, the order would become B, D, C, A.
+            //  Sample videos are at a comment in the pull request #19123)
             lastAction.erasedActions.reversed().forEach { erasedAction ->
                 val index = erasedAction.originalIndex ?: undo.list.size
                 undo.list.add(index, erasedAction)
