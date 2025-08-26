@@ -43,6 +43,7 @@ import androidx.core.graphics.scale
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.time.Time
 import com.ichi2.anki.common.time.getTimestamp
+import com.ichi2.anki.common.utils.ext.removeLastOrNull
 import com.ichi2.anki.dialogs.WhiteBoardWidthDialog
 import com.ichi2.anki.preferences.sharedPrefs
 import com.ichi2.compat.CompatHelper
@@ -474,13 +475,7 @@ class Whiteboard(
 
         fun size(): Int = list.size
 
-        fun pop(): WhiteboardAction? =
-            if (list.isNotEmpty()) {
-                val action = list.removeAt(list.size - 1)
-                action
-            } else {
-                null
-            }
+        fun pop(): WhiteboardAction? = list.removeLastOrNull()
 
         fun apply() {
             bitmap.eraseColor(0)
