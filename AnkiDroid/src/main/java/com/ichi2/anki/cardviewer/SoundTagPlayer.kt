@@ -175,6 +175,41 @@ class SoundTagPlayer(
         abandonAudioFocus()
     }
 
+    private var pausedPosition: Int = 0
+    private var isPaused: Boolean = false
+
+    fun pause() {
+        try {
+            val mp = mediaPlayer
+            if (mp != null && mp.isPlaying) {
+                pausedPosition = mp.currentPosition
+                mp.pause()
+                isPaused = true
+                Timber.i("SoundTagPlayer::pause at position $pausedPosition")
+            }
+        } catch (e: Exception) {
+            Timber.w(e, "Error while pausing audio")
+        }
+    }
+
+    fun resume() {
+        try {
+            val mp = mediaPlayer
+            if (mp != null && isPaused) {
+                mp.seekTo(pausedPosition)
+                mp.start()
+                isPaused = false
+                Timber.i("SoundTagPlayer::resume from position $pausedPosition")
+            }
+        } catch (e: Exception) {
+            Timber.w(e, "Error while resuming audio")
+        }
+    }
+
+    fun isPlaying(): Boolean = mediaPlayer?.isPlaying == true
+
+    fun isPaused(): Boolean = isPaused
+
     /**
      * Produces a usable [MediaPlayer], either creating a new instance or resetting the current
      * instance

@@ -1498,6 +1498,23 @@ abstract class AbstractFlashcardViewer :
         }
     }
 
+    protected var isAudioPaused = false
+
+    protected open fun togglePauseAudio() {
+        val player = cardMediaPlayer
+        if (isAudioPaused) {
+            // Resume audio
+            launchCatchingTask { player.resume() }
+            isAudioPaused = false
+            Timber.i("Audio resumed")
+        } else {
+            // Pause audio
+            player.pause()
+            isAudioPaused = true
+            Timber.i("Audio paused")
+        }
+    }
+
     @VisibleForTesting
     fun readCardTts(side: SingleCardSide) {
         val tags = legacyGetTtsTags(getColUnsafe, currentCard!!, side, this)

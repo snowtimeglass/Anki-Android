@@ -85,7 +85,7 @@
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/suspend_card_command_key"
             android:title="@string/menu_suspend_card"
-            android:icon="@drawable/ic_suspend"
+            android:icon="@drawable/ic_pause_circle_filled"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/reschedule_command_key"
@@ -113,7 +113,7 @@
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/suspend_note_command_key"
             android:title="@string/menu_suspend_note"
-            android:icon="@drawable/ic_suspend"
+            android:icon="@drawable/ic_pause_circle_filled"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/delete_command_key"

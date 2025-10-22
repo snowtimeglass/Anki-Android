@@ -455,6 +455,11 @@ open class Reviewer :
                 Timber.i("Reviewer:: Replay media button pressed (from menu)")
                 playMedia(doMediaReplay = true)
             }
+            R.id.action_pause_audio -> {
+                Timber.i("Reviewer:: Pause Audio button pressed")
+                togglePauseAudio()
+                true
+            }
             R.id.action_toggle_mic_tool_bar -> {
                 Timber.i("Reviewer:: Voice playback visibility set to %b", !isMicToolBarVisible)
                 // Check permission to record and request if not granted

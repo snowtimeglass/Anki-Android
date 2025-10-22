@@ -226,6 +226,30 @@ class CardMediaPlayer : Closeable {
         playAvTagsJob?.cancelAndJoin()
     }
 
+    private var isPaused: Boolean = false
+
+    fun pause() {
+        if (isPlaying && !isPaused) {
+            Timber.i("CardMediaPlayer::pause")
+            isPaused = true
+            soundTagPlayer.pause()
+            try {
+                if (ttsPlayer.isCompleted) {
+                    (ttsPlayer.getCompleted() as? AndroidTtsPlayer)?.stop()
+                }
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    fun resume() {
+        if (isPaused) {
+            Timber.i("CardMediaPlayer::resume")
+            isPaused = false
+            soundTagPlayer.resume()
+        }
+    }
+
     override fun close() {
         soundTagPlayer.release()
         try {
