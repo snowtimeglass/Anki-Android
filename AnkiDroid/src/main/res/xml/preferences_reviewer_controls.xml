@@ -179,6 +179,11 @@
             android:icon="@drawable/ic_play_circle_white"
             />
         <com.ichi2.preferences.ReviewerControlPreference
+            android:key="@string/pause_audio_command_key"
+            android:title="@string/pause_audio"
+            android:icon="@drawable/ic_pause_circle"
+            />
+        <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/record_voice_command_key"
             android:title="@string/record_voice"
             android:icon="@drawable/ic_action_mic"

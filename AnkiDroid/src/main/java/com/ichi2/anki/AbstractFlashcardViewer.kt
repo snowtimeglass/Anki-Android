@@ -1726,6 +1726,11 @@ abstract class AbstractFlashcardViewer :
                 true
             }
 
+            ViewerCommand.PAUSE_AUDIO -> {
+                togglePauseAudio()
+                true
+            }
+
             ViewerCommand.PAGE_UP -> {
                 onPageUp()
                 true
