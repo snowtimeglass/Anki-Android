@@ -779,7 +779,6 @@ class NoteEditorFragment :
                     activity?.showSnackbar(R.string.activity_start_failed)
                 }
             }
-            pasteOcclusionImageButton?.text = TR.notetypesIoPasteImageFromClipboard()
             pasteOcclusionImageButton?.setOnClickListener {
                 // TODO: Support all extensions
                 //  See https://github.com/ankitects/anki/blob/6f3550464d37aee1b8b784e431cbfce8382d3ce7/rslib/src/image_occlusion/imagedata.rs#L154
