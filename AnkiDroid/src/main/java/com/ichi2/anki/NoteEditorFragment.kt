@@ -241,6 +241,7 @@ class NoteEditorFragment :
     private var deckSpinnerSelection: DeckSpinnerSelection? = null
     private var imageOcclusionButtonsContainer: LinearLayout? = null
     private var editOcclusionsButton: Button? = null
+    private var imageSelectionForOcclusionContainer: LinearLayout? = null
     private var cameraForOcclusionButton: Button? = null
     private var galleryForOcclusionButton: Button? = null
     private var pasteOcclusionImageButton: Button? = null
@@ -702,6 +703,7 @@ class NoteEditorFragment :
         }
         imageOcclusionButtonsContainer = requireView().findViewById(R.id.ImageOcclusionButtonsLayout)
         editOcclusionsButton = requireView().findViewById(R.id.EditOcclusionsButton)
+        imageSelectionForOcclusionContainer = requireView().findViewById(R.id.ImageSelectionForOcclusionContainer)
         cameraForOcclusionButton = requireView().findViewById<Button>(R.id.CameraForOcclusionButton)
         galleryForOcclusionButton = requireView().findViewById<Button>(R.id.GalleryForOcclusionButton)
         pasteOcclusionImageButton = requireView().findViewById(R.id.PasteImageForOcclusionButton)
@@ -796,7 +798,7 @@ class NoteEditorFragment :
                 }
             }
         } else {
-            pasteOcclusionImageButton?.visibility = View.GONE
+            imageSelectionForOcclusionContainer?.visibility = View.GONE
             editOcclusionsButton?.visibility = View.VISIBLE
             editOcclusionsButton?.text = resources.getString(R.string.edit_occlusions)
             editOcclusionsButton?.setOnClickListener {
