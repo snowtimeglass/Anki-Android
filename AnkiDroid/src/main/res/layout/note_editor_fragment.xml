@@ -91,29 +91,51 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/edit_occlusions" />
+                <LinearLayout
+                    android:id="@+id/ImageSelectionForOcclusionContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="14dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/CameraForOcclusionButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:icon="@drawable/ic_camera"
-                    app:iconGravity="textStart"
-                    android:text="@string/pick_image_camera" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/GalleryForOcclusionButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:icon="@drawable/ic_gallery"
-                    app:iconGravity="textStart"
-                    android:text="@string/pick_image_gallery" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/PasteImageForOcclusionButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="Paste Image from Clipboard"
-                    app:icon="@drawable/ic_paste"
-                    app:iconGravity="textStart"/>
-
+                        <com.ichi2.ui.FixedTextView
+                            android:id="@+id/ImageSelectionForOcclusionLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="8dip"
+                            android:layout_marginRight="8dip"
+                            android:clickable="false"
+                            android:gravity="start|center_vertical"
+                            android:textStyle="bold"
+                            android:text="@string/imageSelectionForOcclusionLabel" />
+                    </LinearLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/CameraForOcclusionButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/ic_camera"
+                        app:iconGravity="textStart"
+                        android:text="@string/pick_image_camera" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/GalleryForOcclusionButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/ic_gallery"
+                        app:iconGravity="textStart"
+                        android:text="@string/pick_image_gallery" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/PasteImageForOcclusionButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Paste Image from Clipboard"
+                        app:icon="@drawable/ic_paste"
+                        app:iconGravity="textStart"/>
+                </LinearLayout>
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
