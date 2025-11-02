@@ -96,18 +96,14 @@
                     android:id="@+id/ImageSelectionForOcclusionContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingTop="14dp">
+                    android:orientation="vertical"
+                    android:paddingTop="14dp">
 
                         <com.ichi2.ui.FixedTextView
                             android:id="@+id/ImageSelectionForOcclusionLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            android:layout_gravity="start"
                             android:layout_marginLeft="8dip"
                             android:layout_marginRight="8dip"
                             android:layout_marginBottom="4dip"
@@ -115,7 +111,6 @@
                             android:gravity="start|center_vertical"
                             android:textStyle="bold"
                             android:text="@string/imageSelectionForOcclusionLabel" />
-                    </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/GalleryForOcclusionButton"
