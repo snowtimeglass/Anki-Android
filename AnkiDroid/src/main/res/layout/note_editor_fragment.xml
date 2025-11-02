@@ -110,6 +110,7 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="8dip"
                             android:layout_marginRight="8dip"
+                            android:layout_marginBottom="4dip"
                             android:clickable="false"
                             android:gravity="start|center_vertical"
                             android:textStyle="bold"
