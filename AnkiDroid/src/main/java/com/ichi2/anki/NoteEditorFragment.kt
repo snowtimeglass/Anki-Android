@@ -569,6 +569,14 @@ class NoteEditorFragment :
             viewLifecycleOwner,
             Lifecycle.State.RESUMED,
         )
+        view.post {
+            // Showing the deck selection parts is not needed for Image Occlusion notetypes
+            // as deck selection is handled by the backend page
+            if (currentNotetypeIsImageOcclusion()) {
+                view.findViewById<TextView>(R.id.CardEditorDeckText).isVisible = false
+                view.findViewById<View>(R.id.note_deck_spinner).isVisible = false
+            }
+        }
     }
 
     /**
@@ -2389,8 +2397,11 @@ class NoteEditorFragment :
         note: Note?,
         changeType: FieldChangeType,
     ) {
+        // Showing the deck selection parts is not needed for Image Occlusion notetypes
+        // as deck selection is handled by the backend page
         requireView().findViewById<TextView>(R.id.CardEditorDeckText).isVisible = !currentNotetypeIsImageOcclusion()
         requireView().findViewById<View>(R.id.note_deck_spinner).isVisible = !currentNotetypeIsImageOcclusion()
+
         editorNote =
             if (note == null || addNote) {
                 getColUnsafe.run {
