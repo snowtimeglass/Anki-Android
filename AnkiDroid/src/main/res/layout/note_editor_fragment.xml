@@ -145,7 +145,7 @@
                         android:layout_marginHorizontal="15dp"
                         app:icon="@drawable/ic_paste"
                         app:iconGravity="textStart"
-                        android:text="@string/clipboard_for_occlusions" />
+                        android:text="@string/paste_from_clipboard" />
                 </LinearLayout>
             </LinearLayout>
 
