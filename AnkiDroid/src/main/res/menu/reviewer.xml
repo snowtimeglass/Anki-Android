@@ -189,7 +189,7 @@
         android:icon="@drawable/ic_play_circle_white"
         ankidroid:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/action_pause_audio"
+        android:id="@+id/action_toggle_pause_audio"
         android:title="@string/pause_audio"
         android:icon="@drawable/ic_pause_circle"
         ankidroid:showAsAction="ifRoom"/>

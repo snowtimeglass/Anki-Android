@@ -1513,6 +1513,12 @@ abstract class AbstractFlashcardViewer :
             isAudioPaused = true
             Timber.i("Audio paused")
         }
+        invalidateOptionsMenu() // Update icon
+    }
+
+    protected open fun onAudioPlaybackCompleted() {
+        isAudioPaused = false
+        invalidateOptionsMenu()
     }
 
     @VisibleForTesting
