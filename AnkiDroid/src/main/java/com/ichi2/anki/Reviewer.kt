@@ -1029,10 +1029,10 @@ open class Reviewer :
 
         val togglePauseAudioItem = menu.findItem(R.id.action_toggle_pause_audio)
         if (isAudioPaused) {
-            togglePauseAudioItem.setIcon(R.drawable.ic_play_circle_white)
+            togglePauseAudioItem.setIcon(R.drawable.ic_resume_circle)
             togglePauseAudioItem.title = getString(R.string.resume_audio)
         } else {
-            togglePauseAudioItem.setIcon(R.drawable.ic_pause_circle)
+            togglePauseAudioItem.setIcon(R.drawable.ic_pause_circle_alt)
             togglePauseAudioItem.title = getString(R.string.pause_audio)
         }
 

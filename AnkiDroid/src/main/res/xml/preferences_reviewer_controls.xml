@@ -176,12 +176,12 @@
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/play_media_command_key"
             android:title="@string/replay_media"
-            android:icon="@drawable/ic_play_circle_white"
+            android:icon="@drawable/ic_replay_media"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/pause_audio_command_key"
             android:title="@string/pause_audio"
-            android:icon="@drawable/ic_pause_circle"
+            android:icon="@drawable/ic_pause_circle_alt"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/record_voice_command_key"
