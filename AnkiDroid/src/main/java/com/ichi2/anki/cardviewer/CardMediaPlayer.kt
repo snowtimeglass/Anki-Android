@@ -229,16 +229,19 @@ class CardMediaPlayer : Closeable {
     private var isPaused: Boolean = false
 
     fun pause() {
-        if (isPlaying && !isPaused) {
-            Timber.i("CardMediaPlayer::pause")
-            isPaused = true
+        Timber.i("CardMediaPlayer::pause (pause all current media players)")
+        isPaused = true
+
+        try {
             soundTagPlayer.pause()
-            try {
-                if (ttsPlayer.isCompleted) {
-                    (ttsPlayer.getCompleted() as? AndroidTtsPlayer)?.stop()
-                }
-            } catch (_: Exception) {
-            }
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to pause SoundTagPlayer")
+        }
+
+        try {
+            (ttsPlayer.getCompleted() as? AndroidTtsPlayer)?.stop()
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to stop TTS player: ${e.message}")
         }
     }
 
@@ -267,6 +270,7 @@ class CardMediaPlayer : Closeable {
         cardSide: CardSide,
         isAutomaticPlayback: Boolean,
     ) {
+        isPaused = false
         if (!isEnabled) return
         val avTagList =
             when (cardSide) {
