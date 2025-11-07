@@ -727,6 +727,7 @@ class ReviewerViewModel(
                 ViewerAction.STATISTICS -> destinationFlow.emit(StatisticsDestination())
                 ViewerAction.BROWSE -> emitBrowseDestination()
                 ViewerAction.PLAY_MEDIA -> replayMedia()
+                ViewerAction.PAUSE_AUDIO -> {}
                 ViewerAction.FLAG_MENU -> {}
             }
         }
