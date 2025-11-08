@@ -52,6 +52,12 @@ class SoundTagPlayer(
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
 
+    private var onPlaybackStarted: (() -> Unit)? = null
+
+    fun setOnPlaybackStartedListener(listener: (() -> Unit)?) {
+        onPlaybackStarted = listener
+    }
+
     /**
      * AudioManager to request/release audio focus
      */
@@ -74,6 +80,7 @@ class SoundTagPlayer(
         tag: SoundOrVideoTag,
         mediaErrorListener: MediaErrorListener?,
     ) {
+        onPlaybackStarted?.invoke()
         val tagType = tag.getType()
         suspendCancellableCoroutine { continuation ->
             Timber.d("Playing SoundOrVideoTag")

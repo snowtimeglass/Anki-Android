@@ -395,6 +395,10 @@ open class Reviewer :
             onAudioPlaybackCompleted()
         }
 
+        cardMediaPlayer.setOnPlaybackStartedListener {
+            invalidateOptionsMenu()
+        }
+
         val isMicToolbarEnabled = MetaDB.getMicToolbarState(this, parentDid)
         if (isMicToolbarEnabled) {
             openMicToolbar()
@@ -656,6 +660,11 @@ open class Reviewer :
             colorPalette.visibility = View.GONE
         }
         updateWhiteboardEditorPosition()
+    }
+
+    override fun onAudioPlaybackStarted() {
+        invalidateOptionsMenu()
+        Timber.i("Audio playback started - UI updated")
     }
 
     override fun onAudioPlaybackCompleted() {
@@ -1028,12 +1037,22 @@ open class Reviewer :
         }
 
         val togglePauseAudioItem = menu.findItem(R.id.action_toggle_pause_audio)
+
         if (isAudioPaused) {
             togglePauseAudioItem.setIcon(R.drawable.ic_resume_circle)
             togglePauseAudioItem.title = getString(R.string.resume_audio)
         } else {
             togglePauseAudioItem.setIcon(R.drawable.ic_pause_circle_alt)
             togglePauseAudioItem.title = getString(R.string.pause_audio)
+        }
+
+        val isPlayerActive = cardMediaPlayer.isActive()
+        if (isPlayerActive) {
+            togglePauseAudioItem.isEnabled = true
+            togglePauseAudioItem.iconAlpha = Themes.ALPHA_ICON_ENABLED_LIGHT
+        } else {
+            togglePauseAudioItem.isEnabled = false
+            togglePauseAudioItem.iconAlpha = Themes.ALPHA_ICON_DISABLED_LIGHT
         }
 
         val voicePlaybackIcon = menu.findItem(R.id.action_toggle_mic_tool_bar)

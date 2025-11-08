@@ -87,6 +87,13 @@ class CardMediaPlayer : Closeable {
     private val ttsPlayer: Deferred<TtsPlayer>
     private val mediaErrorListener: MediaErrorListener
 
+    private var onPlaybackStarted: (() -> Unit)? = null
+
+    fun setOnPlaybackStartedListener(listener: (() -> Unit)?) {
+        onPlaybackStarted = listener
+        soundTagPlayer.setOnPlaybackStartedListener(listener)
+    }
+
     @VisibleForTesting
     constructor(soundTagPlayer: SoundTagPlayer, ttsPlayer: Deferred<TtsPlayer>, mediaErrorListener: MediaErrorListener) {
         this.soundTagPlayer = soundTagPlayer
@@ -164,6 +171,7 @@ class CardMediaPlayer : Closeable {
     }
 
     suspend fun autoplayAllForSide(cardSide: CardSide) {
+        onPlaybackStarted?.invoke()
         if (config.autoplay) {
             playAllForSide(cardSide)
         }
@@ -252,6 +260,8 @@ class CardMediaPlayer : Closeable {
             soundTagPlayer.resume()
         }
     }
+
+    fun isActive(): Boolean = isPlaying || isPaused
 
     override fun close() {
         soundTagPlayer.release()
@@ -347,11 +357,22 @@ class CardMediaPlayer : Closeable {
     /**
      * Replays all sounds for [side], calling [onMediaGroupCompleted] when completed
      */
-    suspend fun replayAll(side: SingleCardSide) =
+    suspend fun replayAll(side: SingleCardSide) {
+        onPlaybackStarted?.invoke()
+
         when (side) {
-            SingleCardSide.BACK -> if (config.replayQuestion) playAllForSide(CardSide.BOTH) else playAllForSide(CardSide.ANSWER)
+            SingleCardSide.BACK ->
+                if (config.replayQuestion) {
+                    playAllForSide(CardSide.BOTH)
+                } else {
+                    playAllForSide(
+                        CardSide.ANSWER,
+                    )
+                }
+
             SingleCardSide.FRONT -> playAllForSide(CardSide.QUESTION)
         }
+    }
 
     private suspend fun awaitTtsPlayer(isAutomaticPlayback: Boolean): TtsPlayer? {
         val player =

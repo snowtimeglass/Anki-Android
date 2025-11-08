@@ -1516,6 +1516,10 @@ abstract class AbstractFlashcardViewer :
         invalidateOptionsMenu() // Update icon
     }
 
+    protected open fun onAudioPlaybackStarted() {
+        invalidateOptionsMenu()
+    }
+
     protected open fun onAudioPlaybackCompleted() {
         isAudioPaused = false
         invalidateOptionsMenu()
