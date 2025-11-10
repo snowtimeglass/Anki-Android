@@ -1046,13 +1046,10 @@ open class Reviewer :
             togglePauseAudioItem.title = getString(R.string.pause_audio)
         }
 
-        val isPlayerActive = cardMediaPlayer.isActive()
-        if (isPlayerActive) {
-            togglePauseAudioItem.isEnabled = true
-            togglePauseAudioItem.iconAlpha = Themes.ALPHA_ICON_ENABLED_LIGHT
-        } else {
-            togglePauseAudioItem.isEnabled = false
-            togglePauseAudioItem.iconAlpha = Themes.ALPHA_ICON_DISABLED_LIGHT
+        togglePauseAudioItem.apply {
+            val isPlayerActive = cardMediaPlayer.isActive()
+            isEnabled = isPlayerActive
+            iconAlpha = if (isPlayerActive) Themes.ALPHA_ICON_ENABLED_LIGHT else Themes.ALPHA_ICON_DISABLED_LIGHT
         }
 
         val voicePlaybackIcon = menu.findItem(R.id.action_toggle_mic_tool_bar)
