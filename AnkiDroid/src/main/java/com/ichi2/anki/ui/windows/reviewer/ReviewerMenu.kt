@@ -28,6 +28,7 @@ import com.ichi2.anki.preferences.reviewer.ViewerAction
 import com.ichi2.anki.utils.ext.collectLatestIn
 import com.ichi2.anki.utils.ext.menu
 import com.ichi2.anki.utils.ext.removeSubMenu
+import com.ichi2.themes.Themes
 import com.ichi2.utils.setPaddedIcon
 
 fun ReviewerMenuView.setup(
@@ -109,4 +110,27 @@ fun ReviewerMenuView.setup(
             buryItem.setTitle(ViewerAction.BURY_CARD.titleRes)
         }
     }
+
+    val pauseAudioItem = findItem(ViewerAction.PAUSE_AUDIO.menuId)
+    // Update "Pause audio" action's icon and title based on pause state
+    viewModel.audioPausedFlow
+        .flowWithLifecycle(lifecycle)
+        .collectLatestIn(lifecycle.coroutineScope) { isPaused ->
+            if (isPaused) {
+                pauseAudioItem?.setPaddedIcon(context, R.drawable.ic_resume_circle)
+                pauseAudioItem?.setTitle(R.string.resume_audio)
+            } else {
+                pauseAudioItem?.setPaddedIcon(context, R.drawable.ic_pause_circle_alt)
+                pauseAudioItem?.setTitle(R.string.pause_audio)
+            }
+        }
+
+    // Toggle "Pause audio" action's enabled state based on playback activity
+    viewModel.audioActiveFlow
+        .flowWithLifecycle(lifecycle)
+        .collectLatestIn(lifecycle.coroutineScope) { isActive ->
+            pauseAudioItem?.isEnabled = isActive
+            pauseAudioItem?.icon?.alpha =
+                if (isActive) Themes.ALPHA_ICON_ENABLED_LIGHT else Themes.ALPHA_ICON_DISABLED_LIGHT
+        }
 }

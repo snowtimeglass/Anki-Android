@@ -108,6 +108,8 @@ class ReviewerViewModel(
     val setDueDateFlow = MutableSharedFlow<CardId>()
     val answerTimerStatusFlow = MutableStateFlow<AnswerTimerStatus?>(null)
     val answerFeedbackFlow = MutableSharedFlow<Rating>()
+    val audioPausedFlow = MutableStateFlow(false)
+    val audioActiveFlow = MutableStateFlow(false)
     val voiceRecorderEnabledFlow = MutableStateFlow(false)
     val whiteboardEnabledFlow = MutableStateFlow(false)
     val replayVoiceFlow = MutableSharedFlow<Unit>()
@@ -155,9 +157,16 @@ class ReviewerViewModel(
             // button with the answer buttons.
             updateNextTimes()
         }
+        cardMediaPlayer.setOnPlaybackStartedListener {
+        }
+
         cardMediaPlayer.setOnMediaGroupCompletedListener {
             launchCatchingIO {
                 if (!autoAdvance.shouldWaitForAudio()) return@launchCatchingIO
+
+                isAudioPaused = false
+                audioPausedFlow.value = false
+                audioActiveFlow.value = false
 
                 if (showingAnswer.value) {
                     autoAdvance.onShowAnswer()
@@ -665,17 +674,21 @@ class ReviewerViewModel(
         val side = if (showingAnswer.value) SingleCardSide.BACK else SingleCardSide.FRONT
         cardMediaPlayer.replayAll(side)
         isAudioPaused = false
+        audioPausedFlow.value = false
+        audioActiveFlow.value = true
     }
 
     private suspend fun togglePauseAudio() {
         val player = cardMediaPlayer
-        if (isAudioPaused) {
+        if (isAudioPaused || audioPausedFlow.value) {
             player.resume()
             isAudioPaused = false
+            audioPausedFlow.value = false
             Timber.i("Audio resumed (new Reviewer)")
         } else {
             player.pause()
             isAudioPaused = true
+            audioPausedFlow.value = true
             Timber.i("Audio paused (new Reviewer)")
         }
     }
