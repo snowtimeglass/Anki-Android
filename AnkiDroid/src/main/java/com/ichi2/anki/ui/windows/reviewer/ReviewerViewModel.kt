@@ -119,6 +119,7 @@ class ReviewerViewModel(
     override val server: AnkiServer = AnkiServer(this, StudyScreenRepository.getServerPort()).also { it.start() }
     private val stateMutationKey = TimeManager.time.intTimeMS().toString()
     private var typedAnswer = ""
+    private var isAudioPaused = false
 
     private val autoAdvance = AutoAdvance(this)
     private val isHtmlTypeAnswerEnabled = Prefs.isHtmlTypeAnswerEnabled
@@ -663,6 +664,20 @@ class ReviewerViewModel(
     private suspend fun replayMedia() {
         val side = if (showingAnswer.value) SingleCardSide.BACK else SingleCardSide.FRONT
         cardMediaPlayer.replayAll(side)
+        isAudioPaused = false
+    }
+
+    private suspend fun togglePauseAudio() {
+        val player = cardMediaPlayer
+        if (isAudioPaused) {
+            player.resume()
+            isAudioPaused = false
+            Timber.i("Audio resumed (new Reviewer)")
+        } else {
+            player.pause()
+            isAudioPaused = true
+            Timber.i("Audio paused (new Reviewer)")
+        }
     }
 
     fun executeAction(action: ViewerAction) {
@@ -727,7 +742,7 @@ class ReviewerViewModel(
                 ViewerAction.STATISTICS -> destinationFlow.emit(StatisticsDestination())
                 ViewerAction.BROWSE -> emitBrowseDestination()
                 ViewerAction.PLAY_MEDIA -> replayMedia()
-                ViewerAction.PAUSE_AUDIO -> {}
+                ViewerAction.PAUSE_AUDIO -> togglePauseAudio()
                 ViewerAction.FLAG_MENU -> {}
             }
         }
