@@ -395,6 +395,10 @@ open class Reviewer :
             onAudioPlaybackCompleted()
         }
 
+        cardMediaPlayer.setOnSingleMediaCompletedListener {
+            onAudioPlaybackCompleted()
+        }
+
         cardMediaPlayer.setOnPlaybackStartedListener {
             invalidateOptionsMenu()
         }

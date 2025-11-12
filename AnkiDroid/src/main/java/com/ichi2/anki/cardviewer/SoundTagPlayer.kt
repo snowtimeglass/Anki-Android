@@ -58,6 +58,12 @@ class SoundTagPlayer(
         onPlaybackStarted = listener
     }
 
+    private var onPlaybackCompleted: (() -> Unit)? = null
+
+    fun setOnPlaybackCompletedListener(listener: (() -> Unit)?) {
+        onPlaybackCompleted = listener
+    }
+
     /**
      * AudioManager to request/release audio focus
      */
@@ -80,7 +86,10 @@ class SoundTagPlayer(
         tag: SoundOrVideoTag,
         mediaErrorListener: MediaErrorListener?,
     ) {
+        // Invoke the listener registered in CardMediaPlayer
+        // to notify that SoundTagPlayer's playback has started
         onPlaybackStarted?.invoke()
+
         val tagType = tag.getType()
         suspendCancellableCoroutine { continuation ->
             Timber.d("Playing SoundOrVideoTag")
@@ -113,6 +122,11 @@ class SoundTagPlayer(
             setOnCompletionListener {
                 Timber.v("finished playing SoundOrVideoTag successfully")
                 abandonAudioFocus()
+
+                // Invoke the listener registered in CardMediaPlayer
+                // to notify soundTagPlayer's playback has completed
+                onPlaybackCompleted?.invoke()
+
                 // guard against a potential issue: task cancellation
                 if (!continuation.isCompleted) {
                     continuation.resume(Unit)
