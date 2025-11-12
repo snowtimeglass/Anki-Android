@@ -391,16 +391,16 @@ open class Reviewer :
             whiteboard!!.toggleStylus = toggleStylus
         }
 
+        cardMediaPlayer.setOnPlaybackStartedListener {
+            invalidateOptionsMenu()
+        }
+
         cardMediaPlayer.setOnMediaGroupCompletedListener {
             onAudioPlaybackCompleted()
         }
 
         cardMediaPlayer.setOnSingleMediaCompletedListener {
             onAudioPlaybackCompleted()
-        }
-
-        cardMediaPlayer.setOnPlaybackStartedListener {
-            invalidateOptionsMenu()
         }
 
         val isMicToolbarEnabled = MetaDB.getMicToolbarState(this, parentDid)
