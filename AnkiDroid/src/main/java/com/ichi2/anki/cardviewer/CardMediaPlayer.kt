@@ -189,8 +189,8 @@ class CardMediaPlayer : Closeable {
     }
 
     suspend fun autoplayAllForSide(cardSide: CardSide) {
-        onPlaybackStarted?.invoke()
         if (config.autoplay) {
+            onPlaybackStarted?.invoke()
             playAllForSide(cardSide)
         }
     }

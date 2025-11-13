@@ -608,15 +608,17 @@ class ReviewerViewModel(
         autoAdvance.onCardChange(card)
         onCardUpdatedFlow.emit(Unit) // must be before showQuestion()
         showQuestion()
-        loadAndPlayMedia(CardSide.QUESTION)
-        canBuryNoteFlow.emit(isBuryNoteAvailable(card))
-        canSuspendNoteFlow.emit(isSuspendNoteAvailable(card))
-        countsFlow.emit(state.counts to state.countsIndex)
 
-//        userInitiatedPlayback = false
+        // Reset audio state before auto play
         audioActiveFlow.value = false
         audioPausedFlow.value = false
         isAudioPaused = false
+
+        loadAndPlayMedia(CardSide.QUESTION)
+
+        canBuryNoteFlow.emit(isBuryNoteAvailable(card))
+        canSuspendNoteFlow.emit(isSuspendNoteAvailable(card))
+        countsFlow.emit(state.counts to state.countsIndex)
     }
 
     override suspend fun typeAnsFilter(text: String): String {
