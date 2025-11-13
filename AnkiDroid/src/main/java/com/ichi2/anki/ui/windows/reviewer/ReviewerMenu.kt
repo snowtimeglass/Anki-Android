@@ -28,7 +28,6 @@ import com.ichi2.anki.preferences.reviewer.ViewerAction
 import com.ichi2.anki.utils.ext.collectLatestIn
 import com.ichi2.anki.utils.ext.menu
 import com.ichi2.anki.utils.ext.removeSubMenu
-import com.ichi2.themes.Themes
 import com.ichi2.utils.setPaddedIcon
 
 fun ReviewerMenuView.setup(
@@ -130,7 +129,5 @@ fun ReviewerMenuView.setup(
         .flowWithLifecycle(lifecycle)
         .collectLatestIn(lifecycle.coroutineScope) { isActive ->
             pauseAudioItem?.isEnabled = isActive
-            pauseAudioItem?.icon?.alpha =
-                if (isActive) Themes.ALPHA_ICON_ENABLED_LIGHT else Themes.ALPHA_ICON_DISABLED_LIGHT
         }
 }
