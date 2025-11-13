@@ -121,6 +121,8 @@ class ReviewerViewModel(
     override val server: AnkiServer = AnkiServer(this, StudyScreenRepository.getServerPort()).also { it.start() }
     private val stateMutationKey = TimeManager.time.intTimeMS().toString()
     private var typedAnswer = ""
+
+//    private var userInitiatedPlayback = false
     private var isAudioPaused = false
 
     private val autoAdvance = AutoAdvance(this)
@@ -157,8 +159,6 @@ class ReviewerViewModel(
             // button with the answer buttons.
             updateNextTimes()
         }
-        cardMediaPlayer.setOnPlaybackStartedListener {
-        }
 
         cardMediaPlayer.setOnMediaGroupCompletedListener {
             launchCatchingIO {
@@ -169,9 +169,12 @@ class ReviewerViewModel(
 
                 if (!autoAdvance.shouldWaitForAudio()) return@launchCatchingIO
 
+                // Reset Pause/Active state when an in-card single audio playback finishes.
+//                userInitiatedPlayback = false
                 isAudioPaused = false
                 audioPausedFlow.value = false
                 audioActiveFlow.value = false
+                Timber.i("Group media playback completed")
 
                 if (showingAnswer.value) {
                     autoAdvance.onShowAnswer()
@@ -179,6 +182,36 @@ class ReviewerViewModel(
                     autoAdvance.onShowQuestion()
                 }
             }
+        }
+
+        cardMediaPlayer.setOnSingleMediaCompletedListener {
+            launchCatchingIO {
+                delay(100)
+                // Ignore this completion event if a new playback have already started.
+                // This is to avoid making the audio active state false when audio is actually active.
+                // (Making the state true would disable the Pause audio item.)
+                if (cardMediaPlayer.isPlaying) return@launchCatchingIO
+
+                // Reset Pause/Active state when a single audio playback finishes
+//                userInitiatedPlayback = false
+                isAudioPaused = false
+                audioPausedFlow.value = false
+                audioActiveFlow.value = false
+                Timber.i("Single media playback completed")
+            }
+        }
+
+        cardMediaPlayer.setOnPlaybackStartedListener {
+//            // Ignore playback-start events triggered automatically on card load.
+//            // Activate only when playback was initiated by user actions (Replay media action or in-card playback button).
+//            if (!userInitiatedPlayback) return@setOnPlaybackStartedListener
+//            if (!userInitiatedPlayback) userInitiatedPlayback = true
+
+            // Activate Pause Audio when in-card playback starts
+            isAudioPaused = false
+            audioPausedFlow.value = false
+            audioActiveFlow.value = true
+            Timber.i("Playback started")
         }
     }
 
@@ -579,6 +612,11 @@ class ReviewerViewModel(
         canBuryNoteFlow.emit(isBuryNoteAvailable(card))
         canSuspendNoteFlow.emit(isSuspendNoteAvailable(card))
         countsFlow.emit(state.counts to state.countsIndex)
+
+//        userInitiatedPlayback = false
+        audioActiveFlow.value = false
+        audioPausedFlow.value = false
+        isAudioPaused = false
     }
 
     override suspend fun typeAnsFilter(text: String): String {
@@ -678,6 +716,7 @@ class ReviewerViewModel(
     private suspend fun replayMedia() {
         val side = if (showingAnswer.value) SingleCardSide.BACK else SingleCardSide.FRONT
         cardMediaPlayer.replayAll(side)
+//        userInitiatedPlayback = true
         isAudioPaused = false
         audioPausedFlow.value = false
         audioActiveFlow.value = true
