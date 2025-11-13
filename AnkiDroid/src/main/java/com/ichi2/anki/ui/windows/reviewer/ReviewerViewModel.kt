@@ -162,6 +162,11 @@ class ReviewerViewModel(
 
         cardMediaPlayer.setOnMediaGroupCompletedListener {
             launchCatchingIO {
+                // Ignore this completion event if a new playback have already started.
+                // This is to avoid making the audio active state false when audio is actually active.
+                // (Making the state true would disable the Pause audio item.)
+                if (cardMediaPlayer.isPlaying) return@launchCatchingIO
+
                 if (!autoAdvance.shouldWaitForAudio()) return@launchCatchingIO
 
                 isAudioPaused = false
