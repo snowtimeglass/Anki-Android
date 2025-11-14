@@ -40,7 +40,6 @@ class ActionButtonStatus {
         setupButton(preferences, R.id.action_edit, "customButtonEditCard", SHOW_AS_ACTION_IF_ROOM)
         setupButton(preferences, R.id.action_add_note_reviewer, "customButtonAddCard", MENU_DISABLED)
         setupButton(preferences, R.id.action_replay, "customButtonReplay", SHOW_AS_ACTION_IF_ROOM)
-        setupButton(preferences, R.id.action_toggle_pause_audio, "customButtonPauseAudio", SHOW_AS_ACTION_IF_ROOM)
         setupButton(preferences, R.id.action_card_info, "customButtonCardInfo", MENU_DISABLED)
         setupButton(preferences, R.id.action_previous_card_info, "customButtonPreviousCardInfo", MENU_DISABLED)
         setupButton(preferences, R.id.action_clear_whiteboard, "customButtonClearWhiteboard", SHOW_AS_ACTION_IF_ROOM)

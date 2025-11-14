@@ -1498,33 +1498,6 @@ abstract class AbstractFlashcardViewer :
         }
     }
 
-    protected var isAudioPaused = false
-
-    protected open fun togglePauseAudio() {
-        val player = cardMediaPlayer
-        if (isAudioPaused) {
-            // Resume audio
-            launchCatchingTask { player.resume() }
-            isAudioPaused = false
-            Timber.i("Audio resumed")
-        } else {
-            // Pause audio
-            player.pause()
-            isAudioPaused = true
-            Timber.i("Audio paused")
-        }
-        invalidateOptionsMenu() // Update icon
-    }
-
-    protected open fun onAudioPlaybackStarted() {
-        invalidateOptionsMenu()
-    }
-
-    protected open fun onAudioPlaybackCompleted() {
-        isAudioPaused = false
-        invalidateOptionsMenu()
-    }
-
     @VisibleForTesting
     fun readCardTts(side: SingleCardSide) {
         val tags = legacyGetTtsTags(getColUnsafe, currentCard!!, side, this)
@@ -1737,7 +1710,9 @@ abstract class AbstractFlashcardViewer :
             }
 
             ViewerCommand.PAUSE_AUDIO -> {
-                togglePauseAudio()
+                // Do nothing here
+                // (The new Reviewer handles this in ReviewerViewModel.
+                //  The legacy Reviewer does not support Pause audio.)
                 true
             }
 

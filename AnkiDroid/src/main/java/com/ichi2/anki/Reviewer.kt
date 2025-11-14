@@ -391,18 +391,6 @@ open class Reviewer :
             whiteboard!!.toggleStylus = toggleStylus
         }
 
-        cardMediaPlayer.setOnPlaybackStartedListener {
-            invalidateOptionsMenu()
-        }
-
-        cardMediaPlayer.setOnMediaGroupCompletedListener {
-            onAudioPlaybackCompleted()
-        }
-
-        cardMediaPlayer.setOnSingleMediaCompletedListener {
-            onAudioPlaybackCompleted()
-        }
-
         val isMicToolbarEnabled = MetaDB.getMicToolbarState(this, parentDid)
         if (isMicToolbarEnabled) {
             openMicToolbar()
@@ -466,11 +454,6 @@ open class Reviewer :
             R.id.action_replay -> {
                 Timber.i("Reviewer:: Replay media button pressed (from menu)")
                 playMedia(doMediaReplay = true)
-            }
-            R.id.action_toggle_pause_audio -> {
-                Timber.i("Reviewer:: Toggle Pause Audio button pressed")
-                togglePauseAudio()
-                true
             }
             R.id.action_toggle_mic_tool_bar -> {
                 Timber.i("Reviewer:: Voice playback visibility set to %b", !isMicToolBarVisible)
@@ -664,17 +647,6 @@ open class Reviewer :
             colorPalette.visibility = View.GONE
         }
         updateWhiteboardEditorPosition()
-    }
-
-    override fun onAudioPlaybackStarted() {
-        invalidateOptionsMenu()
-        Timber.i("Audio playback started - UI updated")
-    }
-
-    override fun onAudioPlaybackCompleted() {
-        isAudioPaused = false
-        invalidateOptionsMenu()
-        Timber.i("Audio playback completed - UI updated")
     }
 
     override fun replayVoice() {
@@ -1038,22 +1010,6 @@ open class Reviewer :
         if (!buryNoteAvailable() && !actionButtons.status.buryIsDisabled()) {
             menu.findItem(R.id.action_bury).isVisible = false
             menu.findItem(R.id.action_bury_card).isVisible = true
-        }
-
-        val togglePauseAudioItem = menu.findItem(R.id.action_toggle_pause_audio)
-
-        if (isAudioPaused) {
-            togglePauseAudioItem.setIcon(R.drawable.ic_resume_circle)
-            togglePauseAudioItem.title = getString(R.string.resume_audio)
-        } else {
-            togglePauseAudioItem.setIcon(R.drawable.ic_pause_circle_alt)
-            togglePauseAudioItem.title = getString(R.string.pause_audio)
-        }
-
-        togglePauseAudioItem.apply {
-            val isPlayerActive = cardMediaPlayer.isActive()
-            isEnabled = isPlayerActive
-            iconAlpha = if (isPlayerActive) Themes.ALPHA_ICON_ENABLED_LIGHT else Themes.ALPHA_ICON_DISABLED_LIGHT
         }
 
         val voicePlaybackIcon = menu.findItem(R.id.action_toggle_mic_tool_bar)

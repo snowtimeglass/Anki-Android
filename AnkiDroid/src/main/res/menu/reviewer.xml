@@ -188,11 +188,6 @@
         android:title="@string/replay_media"
         android:icon="@drawable/ic_replay_media"
         ankidroid:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/action_toggle_pause_audio"
-        android:title="@string/pause_audio"
-        android:icon="@drawable/ic_pause_circle"
-        ankidroid:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_toggle_mic_tool_bar"

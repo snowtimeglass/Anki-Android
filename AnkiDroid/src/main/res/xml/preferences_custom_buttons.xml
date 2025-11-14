@@ -90,13 +90,6 @@ TODO: Add a unit test
             android:title="@string/replay_media"
             app:useSimpleSummaryProvider="true"/>
         <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/custom_button_labels"
-            android:entryValues="@array/custom_button_values"
-            android:key="@string/custom_button_pause_audio_key"
-            android:title="@string/pause_audio"
-            app:useSimpleSummaryProvider="true"/>
-        <ListPreference
             android:defaultValue="3"
             android:entries="@array/custom_button_labels"
             android:entryValues="@array/custom_button_values"
