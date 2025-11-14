@@ -725,6 +725,12 @@ class ReviewerViewModel(
     }
 
     private suspend fun togglePauseAudio() {
+        // Skip if audio is not active
+        if (!audioActiveFlow.value) {
+            Timber.i("Pause audio ignored: audio not active")
+            return
+        }
+
         val player = cardMediaPlayer
         if (isAudioPaused || audioPausedFlow.value) {
             player.resume()
