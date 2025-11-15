@@ -134,6 +134,8 @@ class ControlsSettingsFragment :
         if (!Prefs.isNewStudyScreenEnabled) {
             findPreference<Preference>(R.string.gestures_corner_touch_preference)?.dependency = getString(R.string.gestures_preference)
             findPreference<Preference>(R.string.pref_swipe_sensitivity_key)?.dependency = getString(R.string.gestures_preference)
+            // Hide "Pause audio" item
+            findPreference<ControlPreference>(getString(R.string.pause_audio_command_key))?.isVisible = false
             return
         }
         for (keyRes in legacyStudyScreenSettings) {
