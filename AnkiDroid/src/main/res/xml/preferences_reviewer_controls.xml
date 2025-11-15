@@ -181,7 +181,7 @@
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/pause_audio_command_key"
             android:title="@string/pause_audio"
-            android:icon="@drawable/ic_pause_circle_alt"
+            android:icon="@drawable/ic_pause_circle"
             />
         <com.ichi2.preferences.ReviewerControlPreference
             android:key="@string/record_voice_command_key"

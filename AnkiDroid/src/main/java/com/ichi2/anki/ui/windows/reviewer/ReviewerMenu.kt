@@ -119,7 +119,7 @@ fun ReviewerMenuView.setup(
                 pauseAudioItem?.setPaddedIcon(context, R.drawable.ic_resume_circle)
                 pauseAudioItem?.setTitle(R.string.resume_audio)
             } else {
-                pauseAudioItem?.setPaddedIcon(context, R.drawable.ic_pause_circle_alt)
+                pauseAudioItem?.setPaddedIcon(context, R.drawable.ic_pause_circle)
                 pauseAudioItem?.setTitle(R.string.pause_audio)
             }
         }
