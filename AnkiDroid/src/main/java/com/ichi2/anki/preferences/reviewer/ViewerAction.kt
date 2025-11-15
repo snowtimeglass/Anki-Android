@@ -75,7 +75,7 @@ enum class ViewerAction(
     RESCHEDULE_NOTE(R.id.action_set_due_date, R.drawable.ic_reschedule, titleRes = R.string.empty_string, DISABLED),
     TOGGLE_AUTO_ADVANCE(R.id.action_toggle_auto_advance, R.drawable.ic_fast_forward, R.string.toggle_auto_advance, DISABLED),
     RECORD_VOICE(R.id.action_record_voice, R.drawable.ic_action_mic, R.string.record_voice, DISABLED),
-    PLAY_MEDIA(R.id.action_replay_media, R.drawable.ic_replay_media, R.string.replay_media, DISABLED),
+    PLAY_MEDIA(R.id.action_replay_media, R.drawable.ic_play_circle_white, R.string.replay_media, DISABLED),
     PAUSE_AUDIO(R.id.action_toggle_pause_audio, R.drawable.ic_pause_circle, R.string.pause_audio, DISABLED),
     USER_ACTION_1(R.id.user_action_1, R.drawable.user_action_1, R.string.user_action_1, DISABLED),
     USER_ACTION_2(R.id.user_action_2, R.drawable.user_action_2, R.string.user_action_2, DISABLED),
