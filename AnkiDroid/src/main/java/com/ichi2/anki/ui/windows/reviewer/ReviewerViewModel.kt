@@ -122,9 +122,6 @@ class ReviewerViewModel(
     private val stateMutationKey = TimeManager.time.intTimeMS().toString()
     private var typedAnswer = ""
 
-//    private var userInitiatedPlayback = false
-    private var isAudioPaused = false
-
     private val autoAdvance = AutoAdvance(this)
     private val isHtmlTypeAnswerEnabled = Prefs.isHtmlTypeAnswerEnabled
 
@@ -170,8 +167,6 @@ class ReviewerViewModel(
                 if (!autoAdvance.shouldWaitForAudio()) return@launchCatchingIO
 
                 // Reset Pause/Active state when an in-card single audio playback finishes.
-//                userInitiatedPlayback = false
-                isAudioPaused = false
                 audioPausedFlow.value = false
                 audioActiveFlow.value = false
                 Timber.i("Group media playback completed")
@@ -193,8 +188,6 @@ class ReviewerViewModel(
                 if (cardMediaPlayer.isPlaying) return@launchCatchingIO
 
                 // Reset Pause/Active state when a single audio playback finishes
-//                userInitiatedPlayback = false
-                isAudioPaused = false
                 audioPausedFlow.value = false
                 audioActiveFlow.value = false
                 Timber.i("Single media playback completed")
@@ -208,7 +201,6 @@ class ReviewerViewModel(
 //            if (!userInitiatedPlayback) userInitiatedPlayback = true
 
             // Activate Pause Audio when in-card playback starts
-            isAudioPaused = false
             audioPausedFlow.value = false
             audioActiveFlow.value = true
             Timber.i("Playback started")
@@ -718,8 +710,6 @@ class ReviewerViewModel(
     private suspend fun replayMedia() {
         val side = if (showingAnswer.value) SingleCardSide.BACK else SingleCardSide.FRONT
         cardMediaPlayer.replayAll(side)
-//        userInitiatedPlayback = true
-        isAudioPaused = false
         audioPausedFlow.value = false
         audioActiveFlow.value = true
     }
@@ -732,14 +722,12 @@ class ReviewerViewModel(
         }
 
         val player = cardMediaPlayer
-        if (isAudioPaused || audioPausedFlow.value) {
+        if (audioPausedFlow.value) {
             player.resume()
-            isAudioPaused = false
             audioPausedFlow.value = false
             Timber.i("Audio resumed (new Reviewer)")
         } else {
             player.pause()
-            isAudioPaused = true
             audioPausedFlow.value = true
             Timber.i("Audio paused (new Reviewer)")
         }
