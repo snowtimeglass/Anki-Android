@@ -25,6 +25,7 @@ import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.R
 import com.ichi2.anki.preferences.reviewer.ReviewerMenuView
 import com.ichi2.anki.preferences.reviewer.ViewerAction
+import com.ichi2.anki.ui.internationalization.toSentenceCase
 import com.ichi2.anki.utils.ext.collectLatestIn
 import com.ichi2.anki.utils.ext.menu
 import com.ichi2.anki.utils.ext.removeSubMenu
@@ -120,7 +121,11 @@ fun ReviewerMenuView.setup(
                 pauseAudioItem?.setTitle(R.string.resume_audio)
             } else {
                 pauseAudioItem?.setPaddedIcon(context, R.drawable.ic_pause_circle)
-                pauseAudioItem?.setTitle(R.string.pause_audio)
+                pauseAudioItem?.setTitle(
+                    CollectionManager.TR
+                        .studyingPauseAudio()
+                        .toSentenceCase(context, R.string.sentence_pause_audio),
+                )
             }
         }
 

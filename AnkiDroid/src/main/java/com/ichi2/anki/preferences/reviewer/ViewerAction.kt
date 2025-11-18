@@ -76,7 +76,7 @@ enum class ViewerAction(
     TOGGLE_AUTO_ADVANCE(R.id.action_toggle_auto_advance, R.drawable.ic_fast_forward, R.string.toggle_auto_advance, DISABLED),
     RECORD_VOICE(R.id.action_record_voice, R.drawable.ic_action_mic, R.string.record_voice, DISABLED),
     PLAY_MEDIA(R.id.action_replay_media, R.drawable.ic_play_circle_white, R.string.replay_media, DISABLED),
-    PAUSE_AUDIO(R.id.action_toggle_pause_audio, R.drawable.ic_pause_circle, R.string.pause_audio, DISABLED),
+    PAUSE_AUDIO(R.id.action_toggle_pause_audio, R.drawable.ic_pause_circle, R.string.empty_string, DISABLED),
     USER_ACTION_1(R.id.user_action_1, R.drawable.user_action_1, R.string.user_action_1, DISABLED),
     USER_ACTION_2(R.id.user_action_2, R.drawable.user_action_2, R.string.user_action_2, DISABLED),
     USER_ACTION_3(R.id.user_action_3, R.drawable.user_action_3, R.string.user_action_3, DISABLED),
@@ -257,6 +257,7 @@ enum class ViewerAction(
             STATISTICS -> TR.statisticsTitle()
             RESCHEDULE_NOTE -> TR.actionsSetDueDate().toSentenceCase(context, R.string.sentence_set_due_date)
             PREVIOUS_CARD_INFO -> TR.actionsPreviousCardInfo().toSentenceCase(context, R.string.sentence_actions_previous_card_info)
+            PAUSE_AUDIO -> TR.studyingPauseAudio().toSentenceCase(context, R.string.sentence_pause_audio)
             else -> context.getString(titleRes)
         }
 

@@ -124,6 +124,9 @@ class ControlsSettingsFragment :
         findPreference<ControlPreference>(getString(R.string.remove_flag_command_key))?.let {
             it.title = getString(R.string.gesture_flag_remove).toSentenceCase(R.string.sentence_gesture_flag_remove)
         }
+        findPreference<ControlPreference>(getString(R.string.pause_audio_command_key))?.let {
+            it.title = TR.studyingPauseAudio().toSentenceCase(R.string.sentence_pause_audio)
+        }
     }
 
     private fun String.toSentenceCase(
