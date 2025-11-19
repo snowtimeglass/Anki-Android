@@ -117,7 +117,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="15dp"
-                        android:text="@string/pick_image_gallery"
+                        android:text="@string/multimedia_editor_image_field_editing_galery"
                         app:icon="@drawable/ic_gallery"
                         app:iconGravity="textStart" />
 
@@ -128,7 +128,7 @@
                         android:layout_marginHorizontal="15dp"
                         app:icon="@drawable/ic_camera"
                         app:iconGravity="textStart"
-                        android:text="@string/pick_image_camera" />
+                        android:text="@string/multimedia_editor_image_field_editing_photo" />
                     
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/PasteImageForOcclusionButton"
