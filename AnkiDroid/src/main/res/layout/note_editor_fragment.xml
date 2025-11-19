@@ -118,7 +118,7 @@
                             android:clickable="false"
                             android:gravity="start|center_vertical"
                             android:textStyle="bold"
-                            android:text="@string/imageSelectionForOcclusionLabel" />
+                            tools:text="Image:"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/GalleryForOcclusionButton"
