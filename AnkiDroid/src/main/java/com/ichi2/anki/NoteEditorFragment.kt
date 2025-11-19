@@ -242,6 +242,7 @@ class NoteEditorFragment :
     private var imageOcclusionButtonsContainer: LinearLayout? = null
     private var editOcclusionsButton: Button? = null
     private var imageSelectionForOcclusionContainer: LinearLayout? = null
+    private var imageSelectionForOcclusionLabel: TextView? = null
     private var cameraForOcclusionButton: Button? = null
     private var galleryForOcclusionButton: Button? = null
     private var pasteOcclusionImageButton: Button? = null
@@ -704,6 +705,7 @@ class NoteEditorFragment :
         imageOcclusionButtonsContainer = requireView().findViewById(R.id.ImageOcclusionButtonsLayout)
         editOcclusionsButton = requireView().findViewById(R.id.EditOcclusionsButton)
         imageSelectionForOcclusionContainer = requireView().findViewById(R.id.ImageSelectionForOcclusionContainer)
+        imageSelectionForOcclusionLabel = requireView().findViewById(R.id.ImageSelectionForOcclusionLabel)
         cameraForOcclusionButton = requireView().findViewById<Button>(R.id.CameraForOcclusionButton)
         galleryForOcclusionButton = requireView().findViewById<Button>(R.id.GalleryForOcclusionButton)
         pasteOcclusionImageButton = requireView().findViewById(R.id.PasteImageForOcclusionButton)
@@ -764,6 +766,8 @@ class NoteEditorFragment :
 
         if (addNote) {
             editOcclusionsButton?.visibility = View.GONE
+
+            imageSelectionForOcclusionLabel?.text = TR.notetypesImage() + ":"
 
             cameraForOcclusionButton?.setOnClickListener {
                 Timber.i("Camera button clicked")
