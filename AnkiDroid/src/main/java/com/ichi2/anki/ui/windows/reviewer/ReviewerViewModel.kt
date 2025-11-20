@@ -108,8 +108,8 @@ class ReviewerViewModel(
     val setDueDateFlow = MutableSharedFlow<CardId>()
     val answerTimerStatusFlow = MutableStateFlow<AnswerTimerStatus?>(null)
     val answerFeedbackFlow = MutableSharedFlow<Rating>()
-    val audioPausedFlow = MutableStateFlow(false)
     val audioActiveFlow = MutableStateFlow(false)
+    val audioPausedFlow = MutableStateFlow(false)
     val voiceRecorderEnabledFlow = MutableStateFlow(false)
     val whiteboardEnabledFlow = MutableStateFlow(false)
     val replayVoiceFlow = MutableSharedFlow<Unit>()
@@ -167,8 +167,8 @@ class ReviewerViewModel(
                 if (!autoAdvance.shouldWaitForAudio()) return@launchCatchingIO
 
                 // Reset Pause/Active state when an in-card single audio playback finishes.
-                audioPausedFlow.value = false
                 audioActiveFlow.value = false
+                audioPausedFlow.value = false
                 Timber.i("Group media playback completed")
 
                 if (showingAnswer.value) {
@@ -188,8 +188,8 @@ class ReviewerViewModel(
                 if (cardMediaPlayer.isPlaying) return@launchCatchingIO
 
                 // Reset Pause/Active state when a single audio playback finishes
-                audioPausedFlow.value = false
                 audioActiveFlow.value = false
+                audioPausedFlow.value = false
                 Timber.i("Single media playback completed")
             }
         }
@@ -201,8 +201,8 @@ class ReviewerViewModel(
 //            if (!userInitiatedPlayback) userInitiatedPlayback = true
 
             // Activate Pause Audio when in-card playback starts
-            audioPausedFlow.value = false
             audioActiveFlow.value = true
+            audioPausedFlow.value = false
             Timber.i("Playback started")
         }
     }
@@ -709,8 +709,8 @@ class ReviewerViewModel(
     private suspend fun replayMedia() {
         val side = if (showingAnswer.value) SingleCardSide.BACK else SingleCardSide.FRONT
         cardMediaPlayer.replayAll(side)
-        audioPausedFlow.value = false
         audioActiveFlow.value = true
+        audioPausedFlow.value = false
     }
 
     private suspend fun togglePauseAudio() {
