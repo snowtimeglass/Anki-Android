@@ -129,7 +129,7 @@ fun ReviewerMenuView.setup(
             }
         }
 
-    // Toggle "Pause audio" action's enabled state based on playback activity
+    // Toggle "Pause audio" action's enable/disable state based on playback activity
     viewModel.audioActiveFlow
         .flowWithLifecycle(lifecycle)
         .collectLatestIn(lifecycle.coroutineScope) { isActive ->
