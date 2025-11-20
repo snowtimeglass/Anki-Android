@@ -283,8 +283,6 @@ class CardMediaPlayer : Closeable {
         }
     }
 
-    fun isActive(): Boolean = isPlaying || isPaused
-
     override fun close() {
         soundTagPlayer.release()
         try {

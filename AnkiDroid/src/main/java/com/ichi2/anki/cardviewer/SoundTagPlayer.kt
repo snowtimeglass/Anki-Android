@@ -227,10 +227,6 @@ class SoundTagPlayer(
         }
     }
 
-    fun isPlaying(): Boolean = mediaPlayer?.isPlaying == true
-
-    fun isPaused(): Boolean = isPaused
-
     /**
      * Produces a usable [MediaPlayer], either creating a new instance or resetting the current
      * instance
