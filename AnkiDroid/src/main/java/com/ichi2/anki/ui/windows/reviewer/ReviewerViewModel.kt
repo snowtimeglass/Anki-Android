@@ -601,10 +601,9 @@ class ReviewerViewModel(
         onCardUpdatedFlow.emit(Unit) // must be before showQuestion()
         showQuestion()
 
-//        // Reset audio state before auto play
-//        audioActiveFlow.value = false
-//        audioPausedFlow.value = false
-//        isAudioPaused = false
+        // Reset audio state
+        audioActiveFlow.value = false
+        audioPausedFlow.value = false
 
         loadAndPlayMedia(CardSide.QUESTION)
 
