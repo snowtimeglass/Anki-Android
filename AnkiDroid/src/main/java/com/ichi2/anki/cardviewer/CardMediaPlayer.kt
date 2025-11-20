@@ -90,13 +90,17 @@ class CardMediaPlayer : Closeable {
     private var onPlaybackStarted: (() -> Unit)? = null
 
     fun setOnPlaybackStartedListener(listener: (() -> Unit)?) {
-        // Store the listener registered in Reviewer inside CardMediaPlayer
+        // Store the listener registered in ReviewerViewModel inside CardMediaPlayer
         // so CardMediaPlayer can invoke the listener when playback starts
         // via the "Replay media" action, which triggers all-media playback.
         onPlaybackStarted = listener
 
-        // Pass the listener registered in Reviewer down to SoundTagPlayer
-        // so SoundTagPlayer can invoke the listener when playback starts
+        // Pass the listener registered in ReviewerViewModel down to SoundTagPlayer
+        try {
+            // so SoundTagPlayer can invoke the listener when playback starts
+        } catch (e: Exception) {
+            TODO("Not yet implemented")
+        }
         // via an in-card play button, which triggers single-media playback.
         soundTagPlayer.setOnPlaybackStartedListener(listener)
     }
@@ -151,7 +155,7 @@ class CardMediaPlayer : Closeable {
     fun setOnSingleMediaCompletedListener(listener: (() -> Unit)?) {
         onSingleMediaCompleted = listener
 
-        // Pass the listener registered in Reviewer down to SoundTagPlayer
+        // Pass the listener registered in ReviewerViewModel down to SoundTagPlayer
         // so SoundTagPlayer can invoke the listener
         // when single-media playback triggered by an in-card play button completes.
         soundTagPlayer.setOnPlaybackCompletedListener(listener)
