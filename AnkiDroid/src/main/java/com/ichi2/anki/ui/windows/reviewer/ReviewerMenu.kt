@@ -112,7 +112,7 @@ fun ReviewerMenuView.setup(
     }
 
     val pauseAudioItem = findItem(ViewerAction.PAUSE_AUDIO.menuId)
-    // Update "Pause audio" action's icon and title based on pause state
+    // Refresh "Pause audio" action's icon and title based on pause state
     viewModel.audioPausedFlow
         .flowWithLifecycle(lifecycle)
         .collectLatestIn(lifecycle.coroutineScope) { isPaused ->
