@@ -30,6 +30,7 @@ import com.ichi2.anki.utils.ext.collectLatestIn
 import com.ichi2.anki.utils.ext.menu
 import com.ichi2.anki.utils.ext.removeSubMenu
 import com.ichi2.utils.setPaddedIcon
+import kotlinx.coroutines.flow.combine
 
 fun ReviewerMenuView.setup(
     lifecycle: Lifecycle,
@@ -130,9 +131,13 @@ fun ReviewerMenuView.setup(
         }
 
     // Toggle "Pause audio" action's enable/disable state based on playback activity
-    viewModel.audioActiveFlow
-        .flowWithLifecycle(lifecycle)
-        .collectLatestIn(lifecycle.coroutineScope) { isActive ->
-            pauseAudioItem?.isEnabled = isActive
+    combine(
+        viewModel.audioActiveFlow,
+        viewModel.ttsActiveFlow,
+    ) { audioActive, ttsActive ->
+        audioActive && !ttsActive // = true only if 'audio is active (= playing or paused) but it is not TTS'
+    }.flowWithLifecycle(lifecycle)
+        .collectLatestIn(lifecycle.coroutineScope) { audioActiveButNotTts ->
+            pauseAudioItem?.isEnabled = audioActiveButNotTts
         }
 }

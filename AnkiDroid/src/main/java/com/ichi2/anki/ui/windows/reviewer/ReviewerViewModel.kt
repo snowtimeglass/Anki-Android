@@ -109,6 +109,7 @@ class ReviewerViewModel(
     val answerTimerStatusFlow = MutableStateFlow<AnswerTimerStatus?>(null)
     val answerFeedbackFlow = MutableSharedFlow<Rating>()
     val audioActiveFlow = MutableStateFlow(false)
+    val ttsActiveFlow = MutableStateFlow(false)
     val audioPausedFlow = MutableStateFlow(false)
     val voiceRecorderEnabledFlow = MutableStateFlow(false)
     val whiteboardEnabledFlow = MutableStateFlow(false)
@@ -204,6 +205,20 @@ class ReviewerViewModel(
             audioActiveFlow.value = true
             audioPausedFlow.value = false
             Timber.i("Playback started")
+        }
+
+        cardMediaPlayer.setOnTtsStartedListener {
+            launchCatchingIO {
+                ttsActiveFlow.value = true
+                Timber.i("TTS started")
+            }
+        }
+
+        cardMediaPlayer.setOnTtsFinishedListener {
+            launchCatchingIO {
+                ttsActiveFlow.value = false
+                Timber.i("TTS finished")
+            }
         }
     }
 

@@ -85,6 +85,7 @@ import java.io.Closeable
 class CardMediaPlayer : Closeable {
     private val soundTagPlayer: SoundTagPlayer
     private val ttsPlayer: Deferred<TtsPlayer>
+    private var isTtsPlaying: Boolean = false
     private val mediaErrorListener: MediaErrorListener
 
     private var onPlaybackStarted: (() -> Unit)? = null
@@ -103,6 +104,17 @@ class CardMediaPlayer : Closeable {
         }
         // via an in-card play button, which triggers single-media playback.
         soundTagPlayer.setOnPlaybackStartedListener(listener)
+    }
+
+    private var onTtsStarted: (() -> Unit)? = null
+    private var onTtsFinished: (() -> Unit)? = null
+
+    fun setOnTtsStartedListener(listener: (() -> Unit)?) {
+        onTtsStarted = listener
+    }
+
+    fun setOnTtsFinishedListener(listener: (() -> Unit)?) {
+        onTtsFinished = listener
     }
 
     @VisibleForTesting
@@ -337,9 +349,15 @@ class CardMediaPlayer : Closeable {
                 when (tag) {
                     is SoundOrVideoTag -> soundTagPlayer.play(tag, mediaErrorListener)
                     is TTSTag -> {
+                        isTtsPlaying = true
+                        onTtsStarted?.invoke()
+
                         awaitTtsPlayer(isAutomaticPlayback)?.play(tag)?.error?.let {
                             mediaErrorListener.onTtsError(it, isAutomaticPlayback)
                         }
+
+                        isTtsPlaying = false
+                        onTtsFinished?.invoke()
                     }
                 }
                 ensureActive()
