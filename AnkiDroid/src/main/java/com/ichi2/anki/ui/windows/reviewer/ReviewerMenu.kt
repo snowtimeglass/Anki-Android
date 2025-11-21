@@ -133,9 +133,9 @@ fun ReviewerMenuView.setup(
     // Toggle "Pause audio" action's enable/disable state based on playback activity
     combine(
         viewModel.audioActiveFlow,
-        viewModel.ttsActiveFlow,
-    ) { audioActive, ttsActive ->
-        audioActive && !ttsActive // = true only if 'audio is active (= playing or paused) but it is not TTS'
+        viewModel.ttsPlayingFlow,
+    ) { audioActive, ttsPlaying ->
+        audioActive && !ttsPlaying // = true only if 'audio is active (= playing or paused), but TTS is not playing'
     }.flowWithLifecycle(lifecycle)
         .collectLatestIn(lifecycle.coroutineScope) { audioActiveButNotTts ->
             pauseAudioItem?.isEnabled = audioActiveButNotTts
