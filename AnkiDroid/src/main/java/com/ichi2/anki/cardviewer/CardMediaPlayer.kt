@@ -481,7 +481,6 @@ class CardMediaPlayer : Closeable {
     fun onVideoPaused() {
         onVideoPaused?.invoke()
         Timber.i("video paused")
-        soundTagPlayer.videoPlayer.onVideoPaused()
     }
 
     companion object {
