@@ -465,19 +465,13 @@ class CardMediaPlayer : Closeable {
         return player
     }
 
-    private var isVideoActive: Boolean = false
-
-    fun isVideoActive(): Boolean = isVideoActive // true if video is playing or paused
-
     fun onVideoStarted() {
-        isVideoActive = true
         Timber.i("Video started")
         onVideoStarted?.invoke()
     }
 
     @NeedsTest("finish moves to next sound")
     fun onVideoFinished() {
-        isVideoActive = false
         Timber.i("Video finished")
         onVideoFinished?.invoke()
         soundTagPlayer.videoPlayer.onVideoFinished()
@@ -485,7 +479,6 @@ class CardMediaPlayer : Closeable {
 
     @NeedsTest("pause starts automatic answer")
     fun onVideoPaused() {
-        isVideoActive = true
         onVideoPaused?.invoke()
         Timber.i("video paused")
         soundTagPlayer.videoPlayer.onVideoPaused()
