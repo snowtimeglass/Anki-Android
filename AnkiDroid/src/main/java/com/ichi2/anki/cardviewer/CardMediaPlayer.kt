@@ -158,13 +158,13 @@ class CardMediaPlayer : Closeable {
             )
         this.ttsPlayer = scope.async { AndroidTtsPlayer.createInstance(scope) }
 
-        soundTagPlayer.videoPlayer.onVideoStarted = {
+        soundTagPlayer.videoPlayer.setOnVideoStartedListener {
             onVideoStarted()
         }
-        soundTagPlayer.videoPlayer.onVideoFinished = {
+        soundTagPlayer.videoPlayer.setOnVideoFinishedListener {
             onVideoFinished()
         }
-        soundTagPlayer.videoPlayer.onVideoPaused = {
+        soundTagPlayer.videoPlayer.setOnVideoPausedListener {
             onVideoPaused()
         }
     }

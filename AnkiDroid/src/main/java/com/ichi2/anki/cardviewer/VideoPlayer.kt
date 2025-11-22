@@ -40,9 +40,23 @@ class VideoPlayer(
 ) {
     private var continuation: CancellableContinuation<Unit>? = null
 
-    var onVideoStarted: (() -> Unit)? = null
-    var onVideoFinished: (() -> Unit)? = null
-    var onVideoPaused: (() -> Unit)? = null
+    private var onVideoStarted: (() -> Unit)? = null
+
+    fun setOnVideoStartedListener(listener: (() -> Unit)?) {
+        onVideoStarted = listener
+    }
+
+    private var onVideoFinished: (() -> Unit)? = null
+
+    fun setOnVideoPausedListener(listener: (() -> Unit)?) {
+        onVideoPaused = listener
+    }
+
+    private var onVideoPaused: (() -> Unit)? = null
+
+    fun setOnVideoFinishedListener(listener: (() -> Unit)?) {
+        onVideoFinished = listener
+    }
 
     fun playVideo(
         continuation: CancellableContinuation<Unit>,
