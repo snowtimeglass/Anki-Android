@@ -124,6 +124,24 @@ class CardMediaPlayer : Closeable {
         onTtsFinished = listener
     }
 
+    private var onVideoStarted: (() -> Unit)? = null
+
+    fun setOnVideoStartedListener(listener: (() -> Unit)?) {
+        onVideoStarted = listener
+    }
+
+    private var onVideoFinished: (() -> Unit)? = null
+
+    fun setOnVideoFinishedListener(listener: (() -> Unit)?) {
+        onVideoFinished = listener
+    }
+
+    private var onVideoPaused: (() -> Unit)? = null
+
+    fun setOnVideoPausedListener(listener: (() -> Unit)?) {
+        onVideoPaused = listener
+    }
+
     @VisibleForTesting
     constructor(soundTagPlayer: SoundTagPlayer, ttsPlayer: Deferred<TtsPlayer>, mediaErrorListener: MediaErrorListener) {
         this.soundTagPlayer = soundTagPlayer
@@ -139,6 +157,16 @@ class CardMediaPlayer : Closeable {
                 videoPlayer = VideoPlayer(javascriptEvaluator),
             )
         this.ttsPlayer = scope.async { AndroidTtsPlayer.createInstance(scope) }
+
+        soundTagPlayer.videoPlayer.onVideoStartedCallback = {
+            onVideoStarted()
+        }
+        soundTagPlayer.videoPlayer.onVideoFinishedCallback = {
+            onVideoFinished()
+        }
+        soundTagPlayer.videoPlayer.onVideoPausedCallback = {
+            onVideoPaused()
+        }
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -437,13 +465,28 @@ class CardMediaPlayer : Closeable {
         return player
     }
 
+    private var isVideoActive: Boolean = false
+
+    fun isVideoActive(): Boolean = isVideoActive // true if video is playing or paused
+
+    fun onVideoStarted() {
+        isVideoActive = true
+        Timber.i("Video started")
+        onVideoStarted?.invoke()
+    }
+
     @NeedsTest("finish moves to next sound")
     fun onVideoFinished() {
+        isVideoActive = false
+        Timber.i("Video finished")
+        onVideoFinished?.invoke()
         soundTagPlayer.videoPlayer.onVideoFinished()
     }
 
     @NeedsTest("pause starts automatic answer")
     fun onVideoPaused() {
+        isVideoActive = true
+        onVideoPaused?.invoke()
         Timber.i("video paused")
         soundTagPlayer.videoPlayer.onVideoPaused()
     }

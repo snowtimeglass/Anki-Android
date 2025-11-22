@@ -134,10 +134,11 @@ fun ReviewerMenuView.setup(
     combine(
         viewModel.audioActiveFlow,
         viewModel.ttsPlayingFlow,
-    ) { audioActive, ttsPlaying ->
-        audioActive && !ttsPlaying // = true only if 'audio is active (= playing or paused), but TTS is not playing'
+        viewModel.videoActiveFlow,
+    ) { audioActive, ttsPlaying, videoActive ->
+        audioActive && !ttsPlaying && !videoActive
     }.flowWithLifecycle(lifecycle)
-        .collectLatestIn(lifecycle.coroutineScope) { audioActiveButNotTts ->
-            pauseAudioItem?.isEnabled = audioActiveButNotTts
+        .collectLatestIn(lifecycle.coroutineScope) { audioActiveButNotTtsNorVideo ->
+            pauseAudioItem?.isEnabled = audioActiveButNotTtsNorVideo
         }
 }
