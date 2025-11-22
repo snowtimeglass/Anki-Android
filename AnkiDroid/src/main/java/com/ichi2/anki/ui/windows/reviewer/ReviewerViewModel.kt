@@ -197,11 +197,6 @@ class ReviewerViewModel(
         }
 
         cardMediaPlayer.setOnPlaybackStartedListener {
-//            // Ignore playback-start events triggered automatically on card load.
-//            // Activate only when playback was initiated by user actions (Replay media action or in-card playback button).
-//            if (!userInitiatedPlayback) return@setOnPlaybackStartedListener
-//            if (!userInitiatedPlayback) userInitiatedPlayback = true
-
             // Activate Pause Audio when in-card playback starts
             audioActiveFlow.value = true
             audioPausedFlow.value = false
