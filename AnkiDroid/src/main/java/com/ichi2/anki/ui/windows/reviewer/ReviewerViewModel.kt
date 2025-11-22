@@ -209,7 +209,7 @@ class ReviewerViewModel(
 
         cardMediaPlayer.setOnSoundTagStartedListener {
             launchCatchingIO {
-                if (cardMediaPlayer.wasTtsPlayingBeforeSoundTag) {
+                if (cardMediaPlayer.wasTtsPlayingBeforeSoundTag()) {
                     Timber.i("TTS forced stopped because SoundTag playback started")
                 }
                 ttsPlayingFlow.value = false

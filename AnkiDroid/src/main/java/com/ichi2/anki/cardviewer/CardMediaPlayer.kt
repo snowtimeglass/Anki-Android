@@ -85,8 +85,12 @@ import java.io.Closeable
 class CardMediaPlayer : Closeable {
     private val soundTagPlayer: SoundTagPlayer
     private val ttsPlayer: Deferred<TtsPlayer>
-    var isTtsPlaying: Boolean = false
-    var wasTtsPlayingBeforeSoundTag: Boolean = false
+    private var isTtsPlaying: Boolean = false
+
+    private var wasTtsPlayingBeforeSoundTag: Boolean = false
+
+    fun wasTtsPlayingBeforeSoundTag(): Boolean = wasTtsPlayingBeforeSoundTag
+
     private val mediaErrorListener: MediaErrorListener
 
     private var onPlaybackStarted: (() -> Unit)? = null
