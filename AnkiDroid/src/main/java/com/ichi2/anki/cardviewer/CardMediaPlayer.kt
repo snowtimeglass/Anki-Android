@@ -101,7 +101,7 @@ class CardMediaPlayer : Closeable {
         // via the "Replay media" action, which triggers all-media playback.
         onPlaybackStarted = listener
 
-        // Pass the listener registered in Reviewer down to SoundTagPlayer
+        // Pass the listener registered in ReviewerViewModel down to SoundTagPlayer
         // so SoundTagPlayer can invoke the listener when playback starts
         // via an in-card play button, which triggers single-media playback.
         soundTagPlayer.setOnPlaybackStartedListener(listener)
