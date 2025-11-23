@@ -316,12 +316,6 @@ class CardMediaPlayer : Closeable {
         } catch (e: Exception) {
             Timber.w(e, "Failed to pause SoundTagPlayer")
         }
-
-        try {
-            (ttsPlayer.getCompleted() as? AndroidTtsPlayer)?.stop()
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to stop TTS player: ${e.message}")
-        }
     }
 
     fun resume() {

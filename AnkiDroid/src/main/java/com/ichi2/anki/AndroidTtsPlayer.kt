@@ -169,16 +169,6 @@ class AndroidTtsPlayer(
         }
     }
 
-    /** Immediately stop current TTS playback (if speaking). */
-    fun stop() {
-        tts?.let {
-            if (it.isSpeaking) {
-                Timber.d("AndroidTtsPlayer::stop() called - stopping current TTS playback")
-                it.stop()
-            }
-        }
-    }
-
     override fun close() {
         Timber.d("Disposing of TTS Engine")
         tts?.stop()
