@@ -104,7 +104,11 @@ class CardMediaPlayer : Closeable {
         // Pass the listener registered in ReviewerViewModel down to SoundTagPlayer
         // so SoundTagPlayer can invoke the listener when playback starts
         // via an in-card play button, which triggers single-media playback.
-        soundTagPlayer.setOnPlaybackStartedListener(listener)
+        soundTagPlayer.setOnPlaybackStartedListener {
+            isSoundPlaybackStart = true
+
+            listener?.invoke()
+        }
     }
 
     private var onSoundTagStarted: (() -> Unit)? = null
@@ -142,6 +146,10 @@ class CardMediaPlayer : Closeable {
         onVideoPaused = listener
     }
 
+    private var isSoundPlaybackStart = false
+
+    fun isSoundPlaybackStart() = isSoundPlaybackStart
+
     @VisibleForTesting
     constructor(soundTagPlayer: SoundTagPlayer, ttsPlayer: Deferred<TtsPlayer>, mediaErrorListener: MediaErrorListener) {
         this.soundTagPlayer = soundTagPlayer
@@ -157,16 +165,16 @@ class CardMediaPlayer : Closeable {
                 videoPlayer = VideoPlayer(javascriptEvaluator),
             )
         this.ttsPlayer = scope.async { AndroidTtsPlayer.createInstance(scope) }
-
-        soundTagPlayer.videoPlayer.setOnVideoStartedListener {
-            onVideoStarted()
-        }
-        soundTagPlayer.videoPlayer.setOnVideoFinishedListener {
-            onVideoFinished()
-        }
-        soundTagPlayer.videoPlayer.setOnVideoPausedListener {
-            onVideoPaused()
-        }
+//
+//        soundTagPlayer.videoPlayer.setOnVideoStartedListener {
+//            onVideoStarted()
+//        }
+//        soundTagPlayer.videoPlayer.setOnVideoFinishedListener {
+//            onVideoFinished()
+//        }
+//        soundTagPlayer.videoPlayer.setOnVideoPausedListener {
+//            onVideoPaused()
+//        }
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -466,6 +474,7 @@ class CardMediaPlayer : Closeable {
     }
 
     fun onVideoStarted() {
+        isSoundPlaybackStart = false
         Timber.i("Video started")
         onVideoStarted?.invoke()
     }
@@ -473,14 +482,15 @@ class CardMediaPlayer : Closeable {
     @NeedsTest("finish moves to next sound")
     fun onVideoFinished() {
         Timber.i("Video finished")
-        onVideoFinished?.invoke()
         soundTagPlayer.videoPlayer.onVideoFinished()
+        onVideoFinished?.invoke()
     }
 
     @NeedsTest("pause starts automatic answer")
     fun onVideoPaused() {
-        onVideoPaused?.invoke()
         Timber.i("video paused")
+        soundTagPlayer.videoPlayer.onVideoPaused()
+        onVideoPaused?.invoke()
     }
 
     companion object {

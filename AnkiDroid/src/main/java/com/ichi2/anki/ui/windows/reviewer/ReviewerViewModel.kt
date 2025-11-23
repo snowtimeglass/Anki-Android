@@ -200,6 +200,12 @@ class ReviewerViewModel(
             // Activate Pause Audio when in-card playback starts
             audioActiveFlow.value = true
             audioPausedFlow.value = false
+
+            if (cardMediaPlayer.isSoundPlaybackStart()) {
+                videoActiveFlow.value = false
+                Timber.i("videoActiveFlow = false (audio playback started)")
+            }
+
             Timber.i("Playback started")
         }
 
@@ -242,8 +248,8 @@ class ReviewerViewModel(
 
         cardMediaPlayer.setOnVideoPausedListener {
             launchCatchingIO {
-                videoActiveFlow.value = true
-                Timber.i("videoActiveFlow = ture (paused)")
+                videoActiveFlow.value = true // Video playback is active when it is playing or paused.
+                Timber.i("videoActiveFlow = true (paused)")
             }
         }
     }
