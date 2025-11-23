@@ -165,16 +165,10 @@ class CardMediaPlayer : Closeable {
                 videoPlayer = VideoPlayer(javascriptEvaluator),
             )
         this.ttsPlayer = scope.async { AndroidTtsPlayer.createInstance(scope) }
-//
-//        soundTagPlayer.videoPlayer.setOnVideoStartedListener {
-//            onVideoStarted()
-//        }
-//        soundTagPlayer.videoPlayer.setOnVideoFinishedListener {
-//            onVideoFinished()
-//        }
-//        soundTagPlayer.videoPlayer.setOnVideoPausedListener {
-//            onVideoPaused()
-//        }
+
+        soundTagPlayer.videoPlayer.setOnVideoStartedListener {
+            onVideoStarted()
+        }
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
