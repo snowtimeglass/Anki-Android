@@ -308,19 +308,14 @@ class CardMediaPlayer : Closeable {
     private var isPaused: Boolean = false
 
     fun pause() {
-        Timber.i("CardMediaPlayer::pause (pause all current media players)")
+        Timber.i("CardMediaPlayer::pause soundTag playback")
         isPaused = true
-
-        try {
-            soundTagPlayer.pause()
-        } catch (e: Exception) {
-            Timber.w(e, "Failed to pause SoundTagPlayer")
-        }
+        soundTagPlayer.pause()
     }
 
     fun resume() {
         if (isPaused) {
-            Timber.i("CardMediaPlayer::resume")
+            Timber.i("CardMediaPlayer::resume soundTag playback")
             isPaused = false
             soundTagPlayer.resume()
         }
