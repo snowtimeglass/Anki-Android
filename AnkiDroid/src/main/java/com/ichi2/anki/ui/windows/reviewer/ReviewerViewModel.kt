@@ -763,7 +763,7 @@ class ReviewerViewModel(
     private suspend fun togglePauseAudio() {
         // Skip if 'audio is inactive (= neither playing nor paused)' or 'TTS audio is playing'
         if (!audioActiveFlow.value || ttsPlayingFlow.value) {
-            Timber.i("Pause audio ignored: audio not active")
+            Timber.i("Pause audio ignored: sound tag audio not active")
             return
         }
 
@@ -771,11 +771,11 @@ class ReviewerViewModel(
         if (audioPausedFlow.value) {
             player.resume()
             audioPausedFlow.value = false
-            Timber.i("Audio resumed (new Reviewer)")
+            Timber.i("Audio resumed")
         } else {
             player.pause()
             audioPausedFlow.value = true
-            Timber.i("Audio paused (new Reviewer)")
+            Timber.i("Audio paused")
         }
     }
 

@@ -375,7 +375,6 @@ class CardMediaPlayer : Closeable {
                 when (tag) {
                     is SoundOrVideoTag -> {
                         wasTtsPlayingBeforeSoundTagStarted = isTtsPlaying
-                        // Notification to treat TTS as not playing
                         onSoundTagStarted?.invoke()
                         soundTagPlayer.play(tag, mediaErrorListener)
                     }
