@@ -86,7 +86,7 @@ class CardMediaPlayer : Closeable {
     private val soundTagPlayer: SoundTagPlayer
     private val ttsPlayer: Deferred<TtsPlayer>
     private var isTtsPlaying: Boolean = false
-    private var wasTtsPlayingBeforeSoundTag: Boolean = false
+    private var wasTtsPlayingBeforeSoundTagStarted: Boolean = false
 
     private val mediaErrorListener: MediaErrorListener
 
@@ -148,7 +148,7 @@ class CardMediaPlayer : Closeable {
 
     fun isSoundPlaybackStart() = isSoundPlaybackStart
 
-    fun wasTtsPlayingBeforeSoundTag(): Boolean = wasTtsPlayingBeforeSoundTag
+    fun wasTtsPlayingBeforeSoundTagStarted(): Boolean = wasTtsPlayingBeforeSoundTagStarted
 
     @VisibleForTesting
     constructor(soundTagPlayer: SoundTagPlayer, ttsPlayer: Deferred<TtsPlayer>, mediaErrorListener: MediaErrorListener) {
@@ -374,7 +374,7 @@ class CardMediaPlayer : Closeable {
                 ensureActive()
                 when (tag) {
                     is SoundOrVideoTag -> {
-                        wasTtsPlayingBeforeSoundTag = isTtsPlaying
+                        wasTtsPlayingBeforeSoundTagStarted = isTtsPlaying
                         // Notification to treat TTS as not playing
                         onSoundTagStarted?.invoke()
                         soundTagPlayer.play(tag, mediaErrorListener)
