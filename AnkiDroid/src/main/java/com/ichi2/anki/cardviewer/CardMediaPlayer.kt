@@ -86,10 +86,7 @@ class CardMediaPlayer : Closeable {
     private val soundTagPlayer: SoundTagPlayer
     private val ttsPlayer: Deferred<TtsPlayer>
     private var isTtsPlaying: Boolean = false
-
     private var wasTtsPlayingBeforeSoundTag: Boolean = false
-
-    fun wasTtsPlayingBeforeSoundTag(): Boolean = wasTtsPlayingBeforeSoundTag
 
     private val mediaErrorListener: MediaErrorListener
 
@@ -118,11 +115,12 @@ class CardMediaPlayer : Closeable {
     }
 
     private var onTtsStarted: (() -> Unit)? = null
-    private var onTtsFinished: (() -> Unit)? = null
 
     fun setOnTtsStartedListener(listener: (() -> Unit)?) {
         onTtsStarted = listener
     }
+
+    private var onTtsFinished: (() -> Unit)? = null
 
     fun setOnTtsFinishedListener(listener: (() -> Unit)?) {
         onTtsFinished = listener
@@ -149,6 +147,8 @@ class CardMediaPlayer : Closeable {
     private var isSoundPlaybackStart = false
 
     fun isSoundPlaybackStart() = isSoundPlaybackStart
+
+    fun wasTtsPlayingBeforeSoundTag(): Boolean = wasTtsPlayingBeforeSoundTag
 
     @VisibleForTesting
     constructor(soundTagPlayer: SoundTagPlayer, ttsPlayer: Deferred<TtsPlayer>, mediaErrorListener: MediaErrorListener) {
