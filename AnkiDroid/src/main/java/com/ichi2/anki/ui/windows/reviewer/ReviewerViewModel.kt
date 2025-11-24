@@ -760,7 +760,7 @@ class ReviewerViewModel(
         audioPausedFlow.value = false
     }
 
-    private suspend fun togglePauseAudio() {
+    private fun togglePauseAudio() {
         // Skip if 'audio is inactive (= neither playing nor paused)' or 'TTS audio is playing'
         if (!audioActiveFlow.value || ttsPlayingFlow.value) {
             Timber.i("Pause audio ignored: sound tag audio not active")
