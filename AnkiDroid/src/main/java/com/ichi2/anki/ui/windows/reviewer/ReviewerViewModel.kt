@@ -168,7 +168,7 @@ class ReviewerViewModel(
 
                 if (!autoAdvance.shouldWaitForAudio()) return@launchCatchingIO
 
-                // Reset Pause/Active state when an in-card single audio playback finishes.
+                // Reset Pause/Active state when all media playbacks finish.
                 audioActiveFlow.value = false
                 audioPausedFlow.value = false
                 Timber.i("Group media playback completed")
