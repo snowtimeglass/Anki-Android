@@ -427,6 +427,7 @@ class CardMediaPlayer : Closeable {
      * Replays all sounds for [side], calling [onMediaGroupCompleted] when completed
      */
     suspend fun replayAll(side: SingleCardSide) {
+        Timber.i("CardMediaPlayer::replay all media")
         onPlaybackStarted?.invoke()
 
         when (side) {
@@ -449,21 +450,21 @@ class CardMediaPlayer : Closeable {
     }
 
     fun onVideoStarted() {
+        Timber.i("CardMediaPlayer::video started")
         isSoundPlaybackStart = false
-        Timber.i("Video started")
         onVideoStarted?.invoke()
     }
 
     @NeedsTest("finish moves to next sound")
     fun onVideoFinished() {
-        Timber.i("Video finished")
+        Timber.i("CardMediaPlayer::video finished")
         soundTagPlayer.videoPlayer.onVideoFinished()
         onVideoFinished?.invoke()
     }
 
     @NeedsTest("pause starts automatic answer")
     fun onVideoPaused() {
-        Timber.i("video paused")
+        Timber.i("CardMediaPlayer::video paused")
         soundTagPlayer.videoPlayer.onVideoPaused()
         onVideoPaused?.invoke()
     }
