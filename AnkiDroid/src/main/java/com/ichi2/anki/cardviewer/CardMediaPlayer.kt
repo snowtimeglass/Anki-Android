@@ -430,15 +430,7 @@ class CardMediaPlayer : Closeable {
         onPlaybackStarted?.invoke()
 
         when (side) {
-            SingleCardSide.BACK ->
-                if (config.replayQuestion) {
-                    playAllForSide(CardSide.BOTH)
-                } else {
-                    playAllForSide(
-                        CardSide.ANSWER,
-                    )
-                }
-
+            SingleCardSide.BACK -> if (config.replayQuestion) playAllForSide(CardSide.BOTH) else playAllForSide(CardSide.ANSWER)
             SingleCardSide.FRONT -> playAllForSide(CardSide.QUESTION)
         }
     }
