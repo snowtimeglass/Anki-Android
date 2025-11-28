@@ -2426,6 +2426,15 @@ class NoteEditorFragment :
         // as deck selection is handled by the backend page
         requireView().findViewById<TextView>(R.id.CardEditorDeckText).isVisible = !currentNotetypeIsImageOcclusion()
         requireView().findViewById<View>(R.id.note_deck_name).isVisible = !currentNotetypeIsImageOcclusion()
+
+        // --- FIX: IO 初期表示時に NoteEditorFragment root が高さ 0 になる問題の対策 ---
+        // Image Occlusion の場合は root に minimumHeight を設定して、高さ 0 を防ぐ
+        if (currentNotetypeIsImageOcclusion()) {
+            val root = requireView().findViewById<View>(R.id.note_editor_layout)
+            val minH = resources.getDimensionPixelSize(R.dimen.note_editor_toolbar_height)
+            root.minimumHeight = minH
+        }
+        // --- END FIX ---
     }
 
     private fun addClozeButton(
