@@ -791,7 +791,7 @@ class NoteEditorFragment :
                         setupImageOcclusionEditor(path)
                     }
                 } else {
-                    showSnackbar(TR.editingNoImageFoundOnClipboard())
+                    requireActivity().showSnackbar(TR.editingNoImageFoundOnClipboard())
                 }
             }
         } else {
