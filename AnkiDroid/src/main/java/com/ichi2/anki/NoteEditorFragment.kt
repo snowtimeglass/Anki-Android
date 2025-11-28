@@ -2431,8 +2431,7 @@ class NoteEditorFragment :
         // Image Occlusion の場合は root に minimumHeight を設定して、高さ 0 を防ぐ
         if (currentNotetypeIsImageOcclusion()) {
             val root = requireView().findViewById<View>(R.id.note_editor_layout)
-            val minH = resources.getDimensionPixelSize(R.dimen.note_editor_toolbar_height)
-            root.minimumHeight = minH
+            root.minimumHeight = 1
         }
         // --- END FIX ---
     }
