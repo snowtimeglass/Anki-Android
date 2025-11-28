@@ -791,7 +791,21 @@ class NoteEditorFragment :
                         setupImageOcclusionEditor(path)
                     }
                 } else {
-                    showSnackbar(TR.editingNoImageFoundOnClipboard())
+                    // Show the Snackbar via the Activity’s root view when the note type is Image Occlusion,
+                    // because any Snackbar anchored to the NoteEditorFragment’s root (via showSnackbar())
+                    // is invisible.
+                    val snackbar =
+                        Snackbar.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            TR.editingNoImageFoundOnClipboard(),
+                            Snackbar.LENGTH_LONG,
+                        )
+
+                    // Slightly lift up the Snackbar to avoid clipping on rounded-corner devices.
+                    val offsetPx = (20 * resources.displayMetrics.density).toInt()
+                    snackbar.view.translationY = -offsetPx.toFloat()
+
+                    snackbar.show()
                 }
             }
         } else {
